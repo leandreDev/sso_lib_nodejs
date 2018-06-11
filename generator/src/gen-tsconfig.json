@@ -1,0 +1,48 @@
+{
+    "compilerOptions": {
+        "module": "CommonJS",
+        "target": "ESNext",
+        "noImplicitAny": false,
+        "sourceMap": false,
+        "outDir": ".",
+        "declaration": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "lib":[
+             "ES5", 
+             "ES6" ,
+             "ES2015" ,
+             "ES7" ,
+             "ES2016" ,
+             "ES2017" ,
+             "ESNext" ,
+             "DOM" ,
+
+             "ScriptHost" ,
+             "ES2015.Core" ,
+             "ES2015.Collection",
+             "ES2015.Generator" ,
+             "ES2015.Iterable" ,
+             "ES2015.Promise" ,
+             "ES2015.Proxy" ,
+             "ES2015.Reflect" ,
+             "ES2015.Symbol" ,
+             "ES2015.Symbol.WellKnown" ,
+             "ES2016.Array.Include" ,
+             "ES2017.object" ,
+             "ES2017.SharedMemory" ,
+             "es2017.string" ,
+             "es2017.intl",
+             "esnext.asynciterable"
+        ]
+    },
+
+    "include": [
+            "index.ts" 
+
+        ],
+    
+    "exclude": [
+        "node_modules"
+    ]
+}

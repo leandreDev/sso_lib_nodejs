@@ -5,9 +5,11 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "rmDist": "rm -r dist",
-    "devDistToMaster": "git checkout dev -- dist",
-    "updateMaster": "npm run rmDist && npm run devDistToMaster"
+    "buildGen": "tsc -p ./generator/src/gen-tsconfig.json",
+    "generator": "node ./generator/src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "testing": "node dist/test.js"
   },
   "repository": {
     "type": "git",

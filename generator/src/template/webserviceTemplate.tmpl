@@ -1,0 +1,361 @@
+
+
+import { IHttpResult } from '../IHttpResult'
+import {UtilsSecu , CtxInterpretor} from "utils" ;
+import { HttpAbstractService } from '../HttpAbstractService' ;
+import { MiddleWareConfig } from '../MiddleWareConfig' ;
+import * as Interface from '../../lib/modelObj/Interfaces' ;
+
+/**
+<%=datas.description%>
+*/
+export class <%=datas.name%> extends HttpAbstractService {
+
+  /**
+<%=datas.description%>
+*/
+  constructor(
+     conf:any 
+
+  ) {
+   super(conf) ;
+   this.url = conf.url ;
+
+  }
+
+  protected url:string ;
+
+
+  protected  globalCtxInt:CtxInterpretor = new CtxInterpretor(process.env) ;
+
+  <% _.forEach(datas.routes , function(route){ %>
+  /**
+  <%=route.description%>
+  <% switch (route._class) { case 'route_post': %>
+    <%if( idObj[route.output]._child && idObj[route.output]._child.length > 0){%>
+     info: vous pouvez poster aussi les enfants !!
+     liste des interfaces héritées possibles:
+     <% _.forEach(idObj[route.output]._child , function(subcollection){ %>
+      I<%=subcollection.name%>    <%=subcollection.description%>
+     <%}) %>
+     <%} else {%>
+
+     <%}%>
+  */
+  public <%=route.name%><T extends Interface.I<%=idName[route.output] %>>( <% _.forEach(route.params , function(param){ %><%=param.paramName%>:<%if(param.type=="objectId"){%>string<%}else{%><%=param.type%><%}%> , <%})%>body:Interface.I<%=idName[route.input] %>, headers:any= {} ): Promise<IHttpResult<T>> {
+    return this.basePost<T>( this.url + "<%=route.path.replace('./' , '')%>" <% _.forEach(route.params , function(param){ %> + <%=param.paramName%> + "/" <%})%>  , body , headers)
+  }
+  /** midlleWare
+    <%=route.description%>
+    <%if( idObj[route.output]._child && idObj[route.output]._child.length > 0){%>
+     info: vous pouvez poster aussi les enfants !!
+     liste des interfaces héritées possibles:
+     <% _.forEach(idObj[route.output]._child , function(subcollection){ %>
+      I<%=subcollection.name%>    <%=subcollection.description%>
+     <%}) %>
+     <%} else {%>
+
+     <%}%>
+  */
+  public  <%=route.name%>Middleware = (config:MiddleWareConfig) =>{   
+    config = this.globalCtxInt.updateEnv(config , true) ;
+    return (req , res , next) =>{
+      var localCtxInt:CtxInterpretor = new CtxInterpretor(req.ctx)
+      localCtxInt.startPatern = "$ctx." ;
+      var localConfig = localCtxInt.updateEnv(config , true) ;
+      this.<%=route.name%>(<% _.forEach(route.params , function(param){ %>localConfig.params.<%=param.paramName%> , <%})%> localConfig.params.body , localConfig.headers)
+      .then((data)=>{
+        req.ctx[localConfig.output] = data ;
+        next() ;
+      }).catch((err)=>{
+        next(err)
+      })
+    }
+  }
+  <%break;case 'route_get':%>
+  */
+  public <%=route.name %><T extends Interface.I<%=idName[route.output] %>>(  <% _.forEach(route.params , function(param){ %><%=param.paramName%>:<%if(param.type=="objectId"){%>string<%}else{%><%=param.type%><%}%> , <%})%> headers:any= {} ): Promise<IHttpResult<T>> {
+    return this.baseGet<T>( this.url + "<%=route.path.replace('./' , '')%>"  <% _.forEach(route.params , function(param){ %> + <%=param.paramName%> + "/" <%})%> , headers)
+  }
+  /** midlleWare
+    <%=route.description%>
+    
+  */
+  public  <%=route.name%>Middleware = (config:MiddleWareConfig) =>{   
+    config = this.globalCtxInt.updateEnv(config , true) ;
+    return (req , res , next) =>{
+      var localCtxInt:CtxInterpretor = new CtxInterpretor(req.ctx)
+      localCtxInt.startPatern = "$ctx." ;
+      var localConfig = localCtxInt.updateEnv(config , true) ;
+      this.<%=route.name%>(<% _.forEach(route.params , function(param){ %>localConfig.params.<%=param.paramName%> , <%})%>  localConfig.headers)
+      .then((data)=>{
+        req.ctx[localConfig.output] = data ;
+        next() ;
+      }).catch((err)=>{
+        next(err)
+      })
+    }
+  }
+  <%break; case 'route_delete':%>
+  */
+  public <%=route.name %><T extends Interface.I<%=idName[route.output] %>>(  <% _.forEach(route.params , function(param){ %><%=param.paramName%>:<%if(param.type=="objectId"){%>string<%}else{%><%=param.type%><%}%> , <%})%> headers:any= {} ): Promise<IHttpResult<T>> {
+    return this.baseDelete<T>( this.url + "<%=route.path.replace('./' , '')%>" <% _.forEach(route.params , function(param){ %> + <%=param.paramName%> + "/" <%})%>  , headers)
+  }
+  /** midlleWare
+    <%=route.description%>
+    
+  */
+  public  <%=route.name%>Middleware = (config:MiddleWareConfig) =>{   
+    config = this.globalCtxInt.updateEnv(config , true) ;
+    return (req , res , next) =>{
+      var localCtxInt:CtxInterpretor = new CtxInterpretor(req.ctx)
+      localCtxInt.startPatern = "$ctx." ;
+      var localConfig = localCtxInt.updateEnv(config , true) ;
+      this.<%=route.name%>(<% _.forEach(route.params , function(param){ %>localConfig.params.<%=param.paramName%> , <%})%>  localConfig.headers)
+      .then((data)=>{
+        req.ctx[localConfig.output] = data ;
+        next() ;
+      }).catch((err)=>{
+        next(err)
+      })
+    }
+  }
+  <%break; case 'route_patch':%>
+  */
+  public <%=route.name %><T extends Interface.I<%=idName[route.output] %>>( <% _.forEach(route.params , function(param){ %><%=param.paramName%>:<%if(param.type=="objectId"){%>string<%}else{%><%=param.type%><%}%> , <%})%> body , headers:any= {} ): Promise<IHttpResult<T>> {
+    return this.basePatch<T>(this.url + "<%=route.path.replace('./' , '')%>" <% _.forEach(route.params , function(param){ %> + <%=param.paramName%> + "/" <%})%>  , body , headers)
+  }
+  /** midlleWare
+    <%=route.description%>
+
+  */
+  public  <%=route.name%>Middleware = (config:MiddleWareConfig) =>{   
+    config = this.globalCtxInt.updateEnv(config , true) ;
+    return (req , res , next) =>{
+      var localCtxInt:CtxInterpretor = new CtxInterpretor(req.ctx)
+      localCtxInt.startPatern = "$ctx." ;
+      var localConfig = localCtxInt.updateEnv(config , true) ;
+      this.<%=route.name%>(<% _.forEach(route.params , function(param){ %>localConfig.params.<%=param.paramName%> , <%})%> localConfig.params.body , localConfig.headers)
+      .then((data)=>{
+        req.ctx[localConfig.output] = data ;
+        next() ;
+      }).catch((err)=>{
+        next(err)
+      })
+    }
+  }
+  <%break; case 'route_put':%>
+    <%if(idObj[route.output]._child && idObj[route.output]._child.length > 0){%>
+     info: vous pouvez poster aussi les enfants !!
+     liste des interfaces héritées possibles:
+     <% _.forEach(idObj[route.output]._child , function(subcollection){ %>
+      I<%=subcollection.name%>    <%=subcollection.description%>
+     <%}) %>
+     <%} else {%>
+
+     <%}%>
+  */
+  public <%=route.name %><T extends Interface.I<%=idName[route.output] %>>( <% _.forEach(route.params , function(param){ %><%=param.paramName%>:<%if(param.type=="objectId"){%>string<%}else{%><%=param.type%><%}%> , <%})%> body:Interface.I<%=idName[route.input] %> , headers:any= {} ): Promise<IHttpResult<T>> {
+    return this.basePatch<T>(this.url +  "<%=route.path.replace('./' , '')%>" <% _.forEach(route.params , function(param){ %> + <%=param.paramName%> + "/" <%})%>  , body , headers)
+  }
+
+  /** midlleWare
+    <%=route.description%>
+    <%if( idObj[route.output]._child && idObj[route.output]._child.length > 0){%>
+     info: vous pouvez poster aussi les enfants !!
+     liste des interfaces héritées possibles:
+     <% _.forEach(idObj[route.output]._child , function(subcollection){ %>
+      I<%=subcollection.name%>    <%=subcollection.description%>
+     <%}) %>
+     <%} else {%>
+
+     <%}%>
+  */
+  public  <%=route.name%>Middleware = (config:MiddleWareConfig) =>{   
+    config = this.globalCtxInt.updateEnv(config , true) ;
+    return (req , res , next) =>{
+      var localCtxInt:CtxInterpretor = new CtxInterpretor(req.ctx)
+      localCtxInt.startPatern = "$ctx." ;
+      var localConfig = localCtxInt.updateEnv(config , true) ;
+      this.<%=route.name%>(<% _.forEach(route.params , function(param){ %>localConfig.params.<%=param.paramName%> , <%})%> localConfig.params.body , localConfig.headers)
+      .then((data)=>{
+        req.ctx[localConfig.output] = data ;
+        next() ;
+      }).catch((err)=>{
+        next(err)
+      })
+    }
+  }
+
+  <%break;case 'route_BddCollection':%>
+  <% switch (route.verbe) { case 'post': %>
+     <%if( idObj[route.protoschemaId]._child && idObj[route.protoschemaId]._child.length > 0){%>
+     info: vous pouvez poster aussi les enfants !!
+     liste des interfaces héritées possibles:
+     <% _.forEach(idObj[route.protoschemaId]._child , function(subcollection){ %>
+      I<%=subcollection.name%>    <%=subcollection.description%>
+     <%}) %>
+     <%} else {%>
+
+     <%}%>
+  */
+    public <%=route.name%><T extends Interface.I<%=idName[route.protoschemaId] %>>( <% _.forEach(route.params , function(param){ %><%=param.paramName%>:<%if(param.type=="objectId"){%>string<%}else{%><%=param.type%><%}%> , <%})%>body:Interface.I<%=idName[route.protoschemaId] %>, headers:any= {} ): Promise<IHttpResult<T>> {
+      return this.basePost<T>(this.url +  "<%=route.path.replace('./' , '')%>" <% _.forEach(route.params , function(param){ %>+ <%=param.paramName%>.toString() + "/"  <%})%> , body , headers)
+    }
+
+    /** midlleWare
+    <%=route.description%>
+    <%if( idObj[route.protoschemaId]._child && idObj[route.protoschemaId]._child.length > 0){%>
+     info: vous pouvez poster aussi les enfants !!
+     liste des interfaces héritées possibles:
+     <% _.forEach(idObj[route.protoschemaId]._child , function(subcollection){ %>
+      I<%=subcollection.name%>    <%=subcollection.description%>
+     <%}) %>
+     <%} else {%>
+
+     <%}%>
+  */
+  public  <%=route.name%>Middleware = (config:MiddleWareConfig) =>{   
+    config = this.globalCtxInt.updateEnv(config , true) ;
+    return (req , res , next) =>{
+      var localCtxInt:CtxInterpretor = new CtxInterpretor(req.ctx)
+      localCtxInt.startPatern = "$ctx." ;
+      var localConfig = localCtxInt.updateEnv(config , true) ;
+      this.<%=route.name%>(<% _.forEach(route.params , function(param){ %>localConfig.params.<%=param.paramName%> , <%})%> localConfig.params.body , localConfig.headers)
+      .then((data)=>{
+        req.ctx[localConfig.output] = data ;
+        next() ;
+      }).catch((err)=>{
+        next(err)
+      })
+    }
+  }
+    <%break;case 'get':%>
+    */
+    public <%=route.name %><T extends Interface.I<%=idName[route.protoschemaId] %>>(  <% _.forEach(route.params , function(param){ %><%=param.paramName%>:<%if(param.type=="objectId"){%>string<%}else{%><%=param.type%><%}%> , <%})%> headers:any= {} ): Promise<IHttpResult<T>> {
+      return this.baseGet<T>(this.url +  "<%=route.path.replace('./' , '')%>"<% _.forEach(route.params , function(param){ %>+ <%=param.paramName%>.toString() + "/"  <%})%> , headers)
+    }
+
+    /** midlleWare
+    <%=route.description%>
+
+  */
+  public  <%=route.name%>Middleware = (config:MiddleWareConfig) =>{   
+    config = this.globalCtxInt.updateEnv(config , true) ;
+    return (req , res , next) =>{
+      var localCtxInt:CtxInterpretor = new CtxInterpretor(req.ctx)
+      localCtxInt.startPatern = "$ctx." ;
+      var localConfig = localCtxInt.updateEnv(config , true) ;
+      this.<%=route.name%>(<% _.forEach(route.params , function(param){ %>localConfig.params.<%=param.paramName%> , <%})%>  localConfig.headers)
+      .then((data)=>{
+        req.ctx[localConfig.output] = data ;
+        next() ;
+      }).catch((err)=>{
+        next(err)
+      })
+    }
+  }
+    <%break; case 'delete':%>
+    */
+    public <%=route.name %><T extends Interface.I<%=idName[route.protoschemaId] %>>(  <% _.forEach(route.params , function(param){ %><%=param.paramName%>:<%if(param.type=="objectId"){%>string<%}else{%><%=param.type%><%}%> , <%})%> headers:any= {} ): Promise<IHttpResult<T>> {
+      return this.baseDelete<T>(this.url +  "<%=route.path.replace('./' , '')%>" <% _.forEach(route.params , function(param){ %>+ <%=param.paramName%>.toString() + "/"  <%})%> , headers)
+    }
+
+    /** midlleWare
+    <%=route.description%>
+
+  */
+  public  <%=route.name%>Middleware = (config:MiddleWareConfig) =>{   
+    config = this.globalCtxInt.updateEnv(config , true) ;
+    return (req , res , next) =>{
+      var localCtxInt:CtxInterpretor = new CtxInterpretor(req.ctx)
+      localCtxInt.startPatern = "$ctx." ;
+      var localConfig = localCtxInt.updateEnv(config , true) ;
+      this.<%=route.name%>(<% _.forEach(route.params , function(param){ %>localConfig.params.<%=param.paramName%> , <%})%>   localConfig.headers)
+      .then((data)=>{
+        req.ctx[localConfig.output] = data ;
+        next() ;
+      }).catch((err)=>{
+        next(err)
+      })
+    }
+  }
+    <%break; case 'patch':%>
+    */
+    public <%=route.name %><T extends Interface.I<%=idName[route.protoschemaId] %>>( <% _.forEach(route.params , function(param){ %><%=param.paramName%>:<%if(param.type=="objectId"){%>string<%}else{%><%=param.type%><%}%> , <%})%> body , headers:any= {} ): Promise<IHttpResult<T>> {
+      return this.basePatch<T>(this.url +  "<%=route.path.replace('./' , '')%>" <% _.forEach(route.params , function(param){ %> + <%=param.paramName%>.toString() + "/"  <%})%> , body , headers)
+    }
+
+    /** midlleWare
+    <%=route.description%>
+
+  */
+  public  <%=route.name%>Middleware = (config:MiddleWareConfig) =>{   
+    config = this.globalCtxInt.updateEnv(config , true) ;
+    return (req , res , next) =>{
+      var localCtxInt:CtxInterpretor = new CtxInterpretor(req.ctx)
+      localCtxInt.startPatern = "$ctx." ;
+      var localConfig = localCtxInt.updateEnv(config , true) ;
+      this.<%=route.name%>(<% _.forEach(route.params , function(param){ %>localConfig.params.<%=param.paramName%> , <%})%> localConfig.params.body , localConfig.headers)
+      .then((data)=>{
+        req.ctx[localConfig.output] = data ;
+        next() ;
+      }).catch((err)=>{
+        next(err)
+      })
+    }
+  }
+    <%break; case 'put':%>
+     <%if(idObj[route.protoschemaId] &&  idObj[route.protoschemaId]._child && idObj[route.protoschemaId]._child.length > 0){%>
+     info: vous pouvez poster aussi les enfants !!
+     liste des interfaces héritées possibles:
+     <% _.forEach(idObj[route.protoschemaId]._child , function(subcollection){ %>
+      I<%=subcollection.name%>    <%=subcollection.description%>
+     <%}) %>
+     <%} else {%>
+
+     <%}%>
+  */
+    public <%=route.name %><T extends Interface.I<%=idName[route.protoschemaId] %>>( <% _.forEach(route.params , function(param){ %><%=param.paramName%>:<%if(param.type=="objectId"){%>string<%}else{%><%=param.type%><%}%> , <%})%> body:Interface.I<%=idName[route.protoschemaId] %> , headers:any= {} ): Promise<IHttpResult<T>> {
+      return this.basePatch<T>(this.url +  "<%=route.path.replace('./' , '')%>" <% _.forEach(route.params , function(param){ %> + <%=param.paramName%>.toString() + "/"  <%})%> , body , headers)
+    }
+
+    /** midlleWare
+    <%=route.description%>
+    <%if( idObj[route.protoschemaId]._child && idObj[route.protoschemaId]._child.length > 0){%>
+     info: vous pouvez poster aussi les enfants !!
+     liste des interfaces héritées possibles:
+     <% _.forEach(idObj[route.protoschemaId]._child , function(subcollection){ %>
+      I<%=subcollection.name%>    <%=subcollection.description%>
+     <%}) %>
+     <%} else {%>
+
+     <%}%>
+  */
+  public  <%=route.name%>Middleware = (config:MiddleWareConfig) =>{   
+    config = this.globalCtxInt.updateEnv(config , true) ;
+    return (req , res , next) =>{
+      var localCtxInt:CtxInterpretor = new CtxInterpretor(req.ctx)
+      localCtxInt.startPatern = "$ctx." ;
+      var localConfig = localCtxInt.updateEnv(config , true) ;
+      this.<%=route.name%>(<% _.forEach(route.params , function(param){ %>localConfig.params.<%=param.paramName%> , <%})%> localConfig.params.body , localConfig.headers)
+      .then((data)=>{
+        req.ctx[localConfig.output] = data ;
+        next() ;
+      }).catch((err)=>{
+        next(err)
+      })
+    }
+  }
+    <%break ; }%>
+
+  <%break ; }%>
+  
+  <%})%>
+
+
+  
+
+  
+}
+

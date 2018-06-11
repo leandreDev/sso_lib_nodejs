@@ -1,0 +1,322 @@
+
+import { IHttpResult } from '../IHttpResult' ;
+import * as Interface from '../../lib/modelObj/Interfaces' ;
+import {UtilsSecu , CtxInterpretor} from "utils" ;
+import {HttpAbstractAggregaService} from "../HttpAbstractAggregaService" ;
+import { MiddleWareConfig } from '../MiddleWareConfig' ;
+
+<% _.forEach(datas.services , function(service){ %>
+<% if(service._class == "AliasBddService"){%>
+import { Api_plateforme } from "../api/Api_plateforme"  ;
+<%}else{%>
+import { <%= idServiceObj[service.webservice].name %> } from "../services/<%= idServiceObj[service.webservice].name %>"  ;
+<%}%>
+<%})%>
+/**
+<%=datas.description %>
+*/
+export class <%=datas.name %> extends HttpAbstractAggregaService {
+
+/**
+<%=datas.description %>
+*/
+constructor(
+    conf:any 
+  ) {
+    super(conf) ;
+
+    <% _.forEach(datas.services , function(service){ %>
+    <% if(service._class == "AliasBddService"){%>
+    this.service_Api = new Api_plateforme({url:conf.apiUrl  , secure:conf.secure} ) ;
+
+    <%}else{%>
+    this.service_<%= idServiceObj[service.webservice].name %> = new <%= idServiceObj[service.webservice].name %>({url:conf.<%= idServiceObj[service.webservice].name %>Url  , secure:conf.secure});
+    <%}%>
+    <%})%>
+  }
+
+ 
+    <% _.forEach(datas.services , function(service){ %>
+    <% if(service._class == "AliasBddService"){%>
+
+    protected service_Api:Api_plateforme ;
+
+
+    //bdd collection
+    <% _.forEach(service.collections , (collection)=>{ %>
+     
+      <% _.forEach(collection.verbes.map((val=>{
+        return {collection:idObj[collection.id] , verbe:val} ;
+      })) , (verbe) =>{ %>
+      <% var collName = verbe.collection.name ; %>
+      <% switch (verbe.verbe) { case 'get': %>
+        /**
+         service d'accès à la collection :<%=verbe.collection.name%>
+         desc: <%= verbe.collection.description %>
+         <%if(verbe.collection._child && verbe.collection._child.length > 0){%>
+         info: vous pouvez voir tous les objets de cette collection y compris les enfants
+         liste des interfaces héritées possibles:
+         <% _.forEach(verbe.collection._child , function(subcollection){ %>
+          I<%=subcollection.name%>      <%=subcollection.description%>
+         <%}) %>
+         <%} else {%>
+     
+         <%}%>
+        */
+        public get_<%=collName%>(query: string = '*',
+        headers:any = {}): Promise<IHttpResult<Interface.I<%=verbe.collection.name%>>> {
+          return this.service_Api.collections.<%=collName%>.get(query , headers)
+        }
+        public get_<%=collName%>MiddleWare(config:MiddleWareConfig):Function {
+          return this.service_Api.collections.<%=collName%>.getMiddleware(config)
+        }
+      <%break;case 'post':%>
+              /**
+         créér un nouvelle enregistrement dans la collection :<%=verbe.collection.name%>
+         desc: <%= verbe.collection.description %>
+         <%if( verbe.collection._child && verbe.collection._child.length > 0){%>
+         info: vous pouvez créer tous les objets enfants
+         liste des interfaces héritées possibles:
+         <% _.forEach(verbe.collection._child , function(subcollection){ %>
+          I<%=subcollection.name%>      <%=subcollection.description%>
+         <%}) %>
+         <%} else {%>
+
+         <%}%>
+        */
+        public post_<%=collName%>( body: Interface.I<%=verbe.collection.name%>,
+        headers:any = {}): Promise<IHttpResult<Interface.I<%=verbe.collection.name%>>> {
+          return this.service_Api.collections.<%=collName%>.post(body , headers)
+        }
+        public post_<%=collName%>MiddleWare(config:MiddleWareConfig):Function {
+          return this.service_Api.collections.<%=collName%>.postMiddleware(config)
+        }
+
+      <%break;case 'put':%>
+                      /**
+         met a jour un enregistrement dans la collection :<%=verbe.collection.name%>
+         desc: <%= verbe.collection.description %>
+         <%if( verbe.collection._child && verbe.collection._child.length > 0){%>
+         info: vous pouvez mettre a jour tous les objets enfants
+         liste des interfaces héritées possibles:
+         <% _.forEach(verbe.collection._child , function(subcollection){ %>
+          I<%=subcollection.name%>      <%=subcollection.description%>
+         <%}) %>
+         <%} else {%>
+
+         <%}%>
+        */
+        public put_<%=collName%>( body: Interface.I<%=verbe.collection.name%>,
+        headers:any = {}): Promise<IHttpResult<Interface.I<%=verbe.collection.name%>>> {
+          return this.service_Api.collections.<%=collName%>.put(body , headers)
+        }
+
+        public put_<%=collName%>MiddleWare(config:MiddleWareConfig):Function {
+          return this.service_Api.collections.<%=collName%>.putMiddleware(config)
+        }
+      <%break;case 'patch':%>
+         /**
+         met a jour un enregistrement partiel dans la collection :<%=verbe.collection.name%>
+         desc: <%= verbe.collection.description %>
+         <%if( verbe.collection._child && verbe.collection._child.length > 0){%>
+         info: vous pouvez mettre a jour tous les objets enfants
+         liste des interfaces héritées possibles:
+         <% _.forEach(verbe.collection._child , function(subcollection){ %>
+          I<%=subcollection.name%>      <%=subcollection.description%>
+         <%}) %>
+         <%} else {%>
+
+         <%}%>
+        */
+        public patch_<%=collName%>( body:any,
+        headers:any = {}): Promise<IHttpResult<Interface.I<%=verbe.collection.name%>>> {
+          return this.service_Api.collections.<%=collName%>.patch(body , headers)
+        }
+        public patch_<%=collName%>MiddleWare(config:MiddleWareConfig):Function {
+          return this.service_Api.collections.<%=collName%>.patchMiddleware(config)
+        }
+      <%break;case 'delete':%>
+                    /**
+         supprime un enregistrement dans la collection :<%=verbe.collection.name%>
+         desc: <%= verbe.collection.description %>
+         <%if( verbe.collection._child && verbe.collection._child.length > 0){%>
+         info: vous pouvez supprimer tous les objets enfants
+         liste des interfaces héritées possibles:
+         <% _.forEach(verbe.collection._child , function(subcollection){ %>
+          I<%=subcollection.name%>      <%=subcollection.description%>
+         <%}) %>
+         <%} else {%>
+
+         <%}%>
+        */
+        public delete_<%=collName%>(id: string ,
+        headers:any = {}): Promise<IHttpResult<Interface.I<%=verbe.collection.name%>>> {
+          return this.service_Api.collections.<%=collName%>.delete(id , headers)
+        }
+        public delete_<%=collName%>MiddleWare(config:MiddleWareConfig):Function {
+          return this.service_Api.collections.<%=collName%>.deleteMiddleware(config)
+        }
+      <%break; } %>
+
+      <%})%>
+    <%})%>
+    // bdd view
+    <% _.forEach(service.views , function(viewId){ %>
+      /**
+      génére une requette sur la vue <%=idViewObj[viewId].name%>
+      <%=idViewObj[viewId].description%>
+      */
+      public <%=idViewObj[viewId].name%>(<% _.forEach(idViewObj[viewId].params , function(param){ %><%=param.paramName%>:<%if(param.type=="objectId"){%>string<%}else{%><%=param.type%><%}%> , <%})%> query: string = '*', headers:any = {}   ): Promise<IHttpResult<Interface.I<%=idViewObj[viewId].output.name%>>> {
+      return this.service_Api.views.<%=idViewObj[viewId].name%>.get(<% _.forEach(idViewObj[viewId].params , function(param){ %><%=param.paramName%> , <%})%> query, headers)
+      }
+      public <%=idViewObj[viewId].name%>MiddleWare(config:MiddleWareConfig):Function {
+          return this.service_Api.views.<%=idViewObj[viewId].name%>.getMiddleware(config)
+      }
+    <%})%>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <%}else{%>
+    protected service_<%= idServiceObj[service.webservice].name %>:<%= idServiceObj[service.webservice].name %> 
+
+
+
+  <% _.forEach(idServiceObj[service.webservice].routes , function(route){ %>
+  <%if(service.routeName.indexOf(route.name) != -1 ){ %>
+
+
+  /** middleware
+  <%=route.description%>
+  */
+  public <%=route.name%>MiddleWare(config:MiddleWareConfig):Function {
+    return this.service_<%= idServiceObj[service.webservice].name %>.<%=route.name%>Middleware(config) ;
+  }
+
+  /**
+  <%=route.description%>
+  <% switch (route._class) { case 'route_post': %>
+    <%if( idObj[route.output] && idObj[route.output]._child && idObj[route.output]._child.length > 0){%>
+     info: vous pouvez poster aussi les enfants !!
+     liste des interfaces héritées possibles:
+     <% _.forEach(idObj[route.output]._child , function(subcollection){ %>
+      I<%=subcollection.name%>    <%=subcollection.description%>
+     <%}) %>
+     <%} else {%>
+    !!!! <%=route.output%>
+     <%}%>
+  */
+  public <%=route.name%><T extends Interface.I<%=idName[route.output] %>>( <% _.forEach(route.params , function(param){ %><%=param.paramName%>:<%if(param.type=="objectId"){%>string<%}else{%><%=param.type%><%}%> , <%})%>body:Interface.I<%=idName[route.input] %>, headers:any= {} ): Promise<IHttpResult<T>> {
+    return this.service_<%= idServiceObj[service.webservice].name %>.<%=route.name%><T>( <% _.forEach(route.params , function(param){ %><%=param.paramName%> , <%})%> body, headers)
+  }
+  <%break;case 'route_get':%>
+  */
+  public <%=route.name %><T extends Interface.I<%=idName[route.output] %>>(  <% _.forEach(route.params , function(param){ %><%=param.paramName%>:<%if(param.type=="objectId"){%>string<%}else{%><%=param.type%><%}%> , <%})%> headers:any= {} ): Promise<IHttpResult<T>> {
+    return this.service_<%= idServiceObj[service.webservice].name %>.<%=route.name%><T>( <% _.forEach(route.params , function(param){ %><%=param.paramName%> , <%})%>   headers)
+  }
+  <%break; case 'route_delete':%>
+  */
+  public <%=route.name %><T extends Interface.I<%=idName[route.output] %>>(  <% _.forEach(route.params , function(param){ %><%=param.paramName%>:<%if(param.type=="objectId"){%>string<%}else{%><%=param.type%><%}%> , <%})%> headers:any= {} ): Promise<IHttpResult<T>> {
+    return this.service_<%= idServiceObj[service.webservice].name %>.<%=route.name%><T>( <% _.forEach(route.params , function(param){ %><%=param.paramName%> , <%})%>   headers)
+  }
+  <%break; case 'route_patch':%>
+  */
+  public <%=route.name %><T extends Interface.I<%=idName[route.output] %>>( <% _.forEach(route.params , function(param){ %><%=param.paramName%>:<%if(param.type=="objectId"){%>string<%}else{%><%=param.type%><%}%> , <%})%> body , headers:any= {} ): Promise<IHttpResult<T>> {
+    return this.service_<%= idServiceObj[service.webservice].name %>.<%=route.name%><T>( <% _.forEach(route.params , function(param){ %><%=param.paramName%> , <%})%>  body , headers)
+  }
+  <%break; case 'route_put':%>
+    <%if(idObj[route.output] && idObj[route.output]._child && idObj[route.output]._child.length > 0){%>
+     info: vous pouvez poster aussi les enfants !!
+     liste des interfaces héritées possibles:
+     <% _.forEach(idObj[route.output]._child , function(subcollection){ %>
+      I<%=subcollection.name%>    <%=subcollection.description%>
+     <%}) %>
+     <%} else {%>
+
+     <%}%>
+  */
+  public <%=route.name %><T extends Interface.I<%=idName[route.output] %>>( <% _.forEach(route.params , function(param){ %><%=param.paramName%>:<%if(param.type=="objectId"){%>string<%}else{%><%=param.type%><%}%> , <%})%> body:T , headers:any= {} ): Promise<IHttpResult<T>> {
+    return this.service_<%= idServiceObj[service.webservice].name %>.<%=route.name%><T>( <% _.forEach(route.params , function(param){ %><%=param.paramName%> , <%})%>  body  , headers)
+  }
+  <%break;case 'route_BddCollection':%>
+  <% switch (route.verbe) { case 'post': %>
+     <%if(idObj[route.protoschemaId] && idObj[route.protoschemaId]._child && idObj[route.protoschemaId]._child.length > 0){%>
+     info: vous pouvez poster aussi les enfants !!
+     liste des interfaces héritées possibles:
+     <% _.forEach(idObj[route.protoschemaId]._child , function(subcollection){ %>
+      I<%=subcollection.name%>    <%=subcollection.description%>
+     <%}) %>
+     <%} else {%>
+
+     <%}%>
+  */
+    public <%=route.name%><T extends Interface.I<%=idName[route.protoschemaId] %>>( <% _.forEach(route.params , function(param){ %><%=param.paramName%>:<%if(param.type=="objectId"){%>string<%}else{%><%=param.type%><%}%> , <%})%>body:T, headers:any= {} ): Promise<IHttpResult<T>> {
+      return this.service_<%= idServiceObj[service.webservice].name %>.<%=route.name%><T>( <% _.forEach(route.params , function(param){ %><%=param.paramName%> , <%})%> body , headers)
+    }
+    <%break;case 'get':%>
+    */
+    public <%=route.name %><T extends Interface.I<%=idName[route.protoschemaId] %>>(  <% _.forEach(route.params , function(param){ %><%=param.paramName%>:<%if(param.type=="objectId"){%>string<%}else{%><%=param.type%><%}%> , <%})%> headers:any= {} ): Promise<IHttpResult<T>> {
+      return this.service_<%= idServiceObj[service.webservice].name %>.<%=route.name%><T>( <% _.forEach(route.params , function(param){ %><%=param.paramName%> , <%})%>  headers)
+    }
+    <%break; case 'delete':%>
+    */
+    public <%=route.name %><T extends Interface.I<%=idName[route.protoschemaId] %>>(  <% _.forEach(route.params , function(param){ %><%=param.paramName%>:<%if(param.type=="objectId"){%>string<%}else{%><%=param.type%><%}%> , <%})%> headers:any= {} ): Promise<IHttpResult<T>> {
+      return this.service_<%= idServiceObj[service.webservice].name %>.<%=route.name%><T>( <% _.forEach(route.params , function(param){ %><%=param.paramName%> , <%})%>  headers)
+    }
+    <%break; case 'patch':%>
+    */
+    public <%=route.name %><T extends Interface.I<%=idName[route.protoschemaId] %>>( <% _.forEach(route.params , function(param){ %><%=param.paramName%>:<%if(param.type=="objectId"){%>string<%}else{%><%=param.type%><%}%> , <%})%> body , headers:any= {} ): Promise<IHttpResult<T>> {
+      return this.service_<%= idServiceObj[service.webservice].name %>.<%=route.name%><T>( <% _.forEach(route.params , function(param){ %><%=param.paramName%> , <%})%>  body , headers)
+    }
+    <%break; case 'put':%>
+     <%if(idObj[route.output] && idObj[route.protoschemaId]._child && idObj[route.protoschemaId]._child.length > 0){%>
+     info: vous pouvez poster aussi les enfants !!
+     liste des interfaces héritées possibles:
+     <% _.forEach(idObj[route.protoschemaId]._child , function(subcollection){ %>
+      I<%=subcollection.name%>    <%=subcollection.description%>
+     <%}) %>
+     <%} else {%>
+
+     <%}%>
+  */
+    public <%=route.name %><T extends Interface.I<%=idName[route.protoschemaId] %>>( <% _.forEach(route.params , function(param){ %><%=param.paramName%>:<%if(param.type=="objectId"){%>string<%}else{%><%=param.type%><%}%> , <%})%> body:T , headers:any= {} ): Promise<IHttpResult<T>> {
+      return this.service_<%= idServiceObj[service.webservice].name %>.<%=route.name%><T>( <% _.forEach(route.params , function(param){ %><%=param.paramName%> , <%})%>  body , headers)
+    }
+    <%break ; }%>
+
+  <%break ; }%>
+  
+    <%}%>
+  <%})%>
+
+
+
+    <%}%>
+
+
+
+    <%})%>
+    
+
+
+
+  
+
+
+
+
+}

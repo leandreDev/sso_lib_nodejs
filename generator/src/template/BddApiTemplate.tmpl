@@ -1,0 +1,144 @@
+
+
+import {UtilsSecu , CtxInterpretor} from "utils" ;
+import { IHttpResult } from '../IHttpResult'
+import {IBase } from "../../lib/IBase" ;
+import {HttpServiceBase} from "../HttpServiceBase" ;
+import { HttpAbstractService } from '../HttpAbstractService'
+import * as Interfaces from "../../lib/modelObj/Interfaces" ;
+import { MiddleWareConfig } from '../MiddleWareConfig' ;
+
+export class api_collection_plateform {
+
+	constructor(conf:any ){
+	this.url = conf.url ;
+	this.secure = conf.secure ;
+	<% _.forEach(datas , function(collection){ %>
+
+		this.<%=collection.name%>= new HttpServiceBase<Interfaces.I<%=collection.name%>>( {url:conf.url + "collection/<%=collection.name%>/" , secure:conf.secure} )  ;
+
+		<% _.forEach(collection._child , function(subcollection){ %>
+		 
+		this.<%=subcollection.name%>= new HttpServiceBase<Interfaces.I<%=subcollection.name%>>({url:conf.url + "collection/<%=subcollection.name%>/" , secure:conf.secure})  ;
+
+		 <%}) %>
+	<%}) %>
+	}
+	protected url:string ;
+	protected secure: UtilsSecu = null
+	<% _.forEach(datas , function(collection){ %>
+		/**
+		 service d'accès à la collection :<%=collection.name%>
+		 desc: <%= collection.description %>
+		 <%if(collection._child && collection._child.length > 0){%>
+		 info: vous pouvez voir tous les objets de cette collection y compris les enfants
+		 liste des interfaces héritées possibles:
+		 <% _.forEach(collection._child , function(subcollection){ %>
+		 	I<%=subcollection.name%>      <%=subcollection.description%>
+		 <%}) %>
+		 <%} else {%>
+
+		 <%}%>
+		*/
+		public <%=collection.name%>:HttpServiceBase<Interfaces.I<%=collection.name%>> ;
+
+		<% _.forEach(collection._child , function(subcollection){ %>
+		 /**
+		 service d'accès a la sous-collection :<%=subcollection.name%>
+		 desc: <%= subcollection.description %>
+		 info: vous ne pouvez voir que ce type d'objet
+		*/
+		public <%=subcollection.name%>:HttpServiceBase<Interfaces.I<%=subcollection.name%>> ;
+
+		 <%}) %>
+	<%}) %>
+	
+}
+
+<% _.forEach(views , function(view){ %>
+/**
+	accès à la vue :<%=view.name%> 
+	<%=view.description%>
+*/
+export class api_view_<%=view.name%> extends HttpAbstractService {
+/**
+	accès à la vue :<%=view.name%> 
+	<%=view.decription%>
+*/	
+	constructor( public conf:any ) {
+			super( conf )
+			this.url = conf.url ;
+		}
+
+	protected url:string ;
+
+	protected  globalCtxInt:CtxInterpretor = new CtxInterpretor(process.env) ;
+
+	/**
+	génére une requette sur la vue <%=view.name%>
+	<%=view.decription%>
+	*/
+	public get( <% _.forEach(view.params , function(param){ %><%=param.paramName%>:<%if(param.type=="objectId"){%>string<%}else{%><%=param.type%><%}%> , <%})%> query: string = '*', headers: any = {}   ): Promise<IHttpResult<Interfaces.I<%=view.output.name%>>> {
+
+		return this.baseGet<Interfaces.I<%=view.output.name%>>(this.url + <% _.forEach(view.params , function(param){ %><%=param.paramName%>.toString() + "/" + <%})%> query , headers)
+	}
+
+	/** middleware
+	génére une requette sur la vue <%=view.name%>
+	<%=view.decription%>
+	*/
+	public  getMiddleware = (config:MiddleWareConfig) =>{   
+	    config = this.globalCtxInt.updateEnv(config , true) ;
+	    return (req , res , next) =>{
+	      var localCtxInt:CtxInterpretor = new CtxInterpretor(req.ctx)
+	      localCtxInt.startPatern = "$ctx." ;
+	      var localConfig = localCtxInt.updateEnv(config , true) ;
+	      this.get( <% _.forEach(view.params , function(param){ %>localConfig.params.<%=param.paramName%> , <%})%> localConfig.params.query, localConfig.headers)
+	      .then((data)=>{
+	        req.ctx[localConfig.output] = data ;
+	        next() ;
+	      }).catch((err)=>{
+	        next(err)
+	      })
+	    }
+	  }
+	}
+<%}) %>
+
+
+export class api_view_plateform {
+
+	constructor( public conf:any ){
+	<% _.forEach(views , function(view){ %>
+	this.<%=view.name%> = new api_view_<%=view.name%>({url:conf.url + "views/<%=view.name%>/" , secure:conf.secure})  ;
+		<%}) %>
+	}
+
+	<% _.forEach(views , function(view){ %>
+	/**
+	accès à la vue :<%=view.name%>     <%=view.description%>
+	*/
+	public <%=view.name%>:api_view_<%=view.name%> ;
+	<%}) %>
+	
+}
+
+
+export  class Api_plateforme {
+
+	constructor(public conf:any  ){
+		this.collections = new api_collection_plateform(conf ) ;
+ 		this.views = new api_view_plateform(conf) ;
+	}
+
+
+
+	/**
+		liste des collections de l'api
+	*/
+	public collections:api_collection_plateform ;
+	/**
+		liste des vues de l'api
+	*/
+	public views: api_view_plateform ; 
+} 
