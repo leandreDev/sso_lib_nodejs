@@ -15,7 +15,8 @@ protected secure:UtilsSecu = null
   	if ( this.secure ) {
       this.secure.addHeadersKey(options) ;
     } 
-    console.log(options) ;
+
+    // console.log(options) ;
   	return request(options)
   }
 
