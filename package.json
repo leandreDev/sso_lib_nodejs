@@ -1,6 +1,6 @@
 {
   "name": "sso_lib_nodejs",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "librarie de communication la base sso pour nodeJS",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
