@@ -16,7 +16,8 @@
     "initNewVBrach": "git checkout -b V$npm_package_version && git push --set-upstream origin V$npm_package_version && git add -A && git push && git checkout dev ",
     "vPatch": "npm --no-git-tag-version version patch && npm run pub",
     "postversion": "git tag dev_$npm_package_version && git add -A && git commit -m 'dev_$npm_package_version' && git push && git push --tags ",
-    "publi": "npm run build && npm run vPatch"
+    "publi": "npm run build && npm run vPatch",
+    "u": "npm install github:hf-dev/utils#semver:^1.0.148"
   },
   "scriptsDev": {
     "pub": "git checkout master && npm version $npm_package_version && git checkout dev",
@@ -45,18 +46,19 @@
   },
   "homepage": "https://github.com/HF-dev/sso_lib_nodejs#readme",
   "dependencies": {
+    
+  },
+  "devDependencies": {
     "assert": "^1.4.1",
     "fs-extra": "^3.0.1",
     "lodash": "^4.17.4",
-    "node-jose": "^0.10.0",
+    "node-jose": "^2.0.0",
     "request": "^2.85.0",
-    "request-promise-native": "^1.0.5"
-  },
-  "devDependencies": {
+    "request-promise-native": "^1.0.5",
     "@types/assert": "0.0.31",
     "@types/fs-extra": "^3.0.3",
     "@types/lodash": "^4.14.66",
     "cross-env": "^5.1.1",
-    "utils": "github:hf-dev/utils"
+    "utils": "github:hf-dev/utils#semver:^1.0.148"
   }
 }
