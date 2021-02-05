@@ -1,6 +1,6 @@
 {
   "name": "sso_lib_nodejs",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "description": "librarie de communication la base sso pour nodeJS",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -10,7 +10,6 @@
     "updateMaster": "npm run rmDist && npm run devDistToMaster",
     "version": "npm run updateMaster && git add -A ",
     "postversion": "git push && git push --tags "
-    
   },
   "scriptsDev": {
     "pub": "git checkout master && npm version $npm_package_version && git checkout dev",
@@ -41,8 +40,6 @@
   "peerDependencies": {
     "utils": "github:hf-dev/utils#semver:^1.0.148"
   },
-  "dependencies": {
-  },
-  "devDependencies": {
-  }
+  "dependencies": {},
+  "devDependencies": {}
 }
