@@ -9,7 +9,7 @@
     "devDistToMaster": "git checkout dev -- dist",
     "updateMaster": "npm run rmDist && npm run devDistToMaster",
     "version": "npm run updateMaster && git add -A ",
-    "postversion": "git push && git push --tags ",
+    "postversion": "git push && git push --tags "
     
   },
   "scriptsDev": {
