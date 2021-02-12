@@ -38,7 +38,7 @@
   },
   "homepage": "https://github.com/HF-dev/sso_lib_nodejs#readme",
   "peerDependencies": {
-    "utils": "github:hf-dev/utils#semver:^1.0.148"
+    "@hfdev/utils": "github:hf-dev/utils#semver:^1.0.148"
   },
   "dependencies": {},
   "devDependencies": {}
