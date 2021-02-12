@@ -1,5 +1,5 @@
-import {IHttpResult} from "./IHttpResult" ;
+import {IHttpResult , IHttpServiceBase , IHttpServiceAdminBase } from "@hfdev/utils" ;
     <% _.forEach(datas , function(service){ %>
-        import {<%= service.name %>} from ".<%= service.path %>" ;
+        export * from ".<%= service.path %>" ;
     <% }) %>
-    export { IHttpResult <% _.forEach(datas , function(service){ %>, <%= service.name %> <% }) %>};
+    export { IHttpResult , IHttpServiceBase , IHttpServiceAdminBase  };

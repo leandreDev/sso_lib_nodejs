@@ -1,0 +1,5 @@
+import {Base} from "../Base" ;
+    <% _.forEach(datas , function(protoSchema){ %>
+        import {Model_<%= protoSchema.name %>} from "./Model_<%= protoSchema.name %>" ;
+    <% }) %>
+    export { Base <% _.forEach(datas , function(protoSchema){ %>, Model_<%= protoSchema.name %> as <%= protoSchema.name %> <% }) %>};

@@ -1,3 +1,6 @@
-import { IHttpResult } from "./IHttpResult";
-import { Api_plateforme } from "./api/Api_plateforme";
-export { IHttpResult, Api_plateforme };
+import { IHttpResult, IHttpServiceBase, IHttpServiceAdminBase } from "@hfdev/utils";
+export * from "./api/Api_plateforme";
+export * from "./api/Bdd_plateforme";
+export * from "./api/IPlateforme";
+export * from "./api/ApiExpressRouter";
+export { IHttpResult, IHttpServiceBase, IHttpServiceAdminBase };

@@ -25,6 +25,4 @@ valeur maximum acceptée
 le pas d'incrément
 */
     "step"?: number;
-    static check(target: any, isCompleteObj?: boolean, path?: string): Promise<boolean>;
-    static create(target: any, path?: string): Promise<Model_number>;
 }

@@ -1,15 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Api_plateforme = exports.api_view_plateform = exports.api_collection_plateform = void 0;
-const HttpServiceBase_1 = require("../HttpServiceBase");
+const utils_1 = require("@hfdev/utils");
 class api_collection_plateform {
     constructor(conf) {
         this.secure = null;
         this.url = conf.url;
         this.secure = conf.secure;
-        this.protoschema = new HttpServiceBase_1.HttpServiceBase({ url: conf.url + "collection/protoschema/", secure: conf.secure });
-        this.oidc_Client = new HttpServiceBase_1.HttpServiceBase({ url: conf.url + "collection/oidc_Client/", secure: conf.secure });
-        this.oidc_account = new HttpServiceBase_1.HttpServiceBase({ url: conf.url + "collection/oidc_account/", secure: conf.secure });
+        this.protoschema = new utils_1.HttpServiceBase({ url: conf.url + "collection/protoschema/", secure: conf.secure });
+        this.admin_protoschema = new utils_1.HttpServiceAdminBase({ url: conf.url + "admin/protoschema/", secure: conf.secure });
+        this.oidc_account = new utils_1.HttpServiceBase({ url: conf.url + "collection/oidc_account/", secure: conf.secure });
+        this.admin_oidc_account = new utils_1.HttpServiceAdminBase({ url: conf.url + "admin/oidc_account/", secure: conf.secure });
+        this.oidc_Client = new utils_1.HttpServiceBase({ url: conf.url + "collection/oidc_Client/", secure: conf.secure });
+        this.admin_oidc_Client = new utils_1.HttpServiceAdminBase({ url: conf.url + "admin/oidc_Client/", secure: conf.secure });
     }
 }
 exports.api_collection_plateform = api_collection_plateform;

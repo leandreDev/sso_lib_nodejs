@@ -1,7 +1,7 @@
 import * as _ from "lodash" ;
 import * as Interface from "./Interfaces" ;
 import * as Index from "./Index" ;
-import {Base } from "../Base" ;
+import {Base } from "@hfdev/utils" ;
 
 <%if(protoSchema.parentModel){%>
 import {Model_<%= idName[protoSchema.parentModel] %> } from "./Model_<%= idName[protoSchema.parentModel] %>"
@@ -26,6 +26,8 @@ export class Model_<%= protoSchema.name %> extends <%if(protoSchema.parentModel)
               return value ;
             }else if(value._id){
               return value._id ;
+            }else if(value._bsontype && value._bsontype === 'ObjectID'){
+                return `<%="${value}"%>` ;
             }
           })
           
@@ -85,8 +87,8 @@ export class Model_<%= protoSchema.name %> extends <%if(protoSchema.parentModel)
             this["<%= field.name%>"] = obj["<%= field.name%>"]._id ;
           }
           <% }else if( field._class == "subdoc"){ %>
-            if(obj._class){
-              this["<%= field.name%>"] =  new Index[obj._class](obj["<%= field.name%>"]) ;
+            if(obj["<%= field.name%>"]._class){
+              this["<%= field.name%>"] =  new Index[obj["<%= field.name%>"]._class](obj["<%= field.name%>"]) ;
             }else{
               this["<%= field.name%>"] =  new Index["<%=idName[field.protoSchemaId] %>"](obj["<%= field.name%>"]) ;
             }
@@ -142,174 +144,6 @@ export class Model_<%= protoSchema.name %> extends <%if(protoSchema.parentModel)
        <% }) %>
 
 
-       public static check(target:any , isCompleteObj:boolean=true,  path:string=""):Promise<boolean>{
-        return super.check(target, isCompleteObj , path)
-        .then((boolean)=>{
-          var promArr:Array<Promise<boolean>> = [Promise.resolve(true)] ;
-          <% _.forEach(protoSchema.fields , function(field){ %>
-              <% if(field.required){ %>
-              if( isCompleteObj && (target["<%= field.name%>"] == null || target["<%= field.name%>"] == undefined) ){
-                  throw new Error(path + "<%= field.name%> is required") ;
-              }
-              <% } %>
-              if(target["<%= field.name%>"] != null && target["<%= field.name%>"] != undefined ){
-              <% if(field._class == "objectid" ){ %>
-                  <%if(field.isArrayOf){%>target["<%=field.name%>"].forEach((_<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%> , index:number)=>{
-                  <%}else{%>let _<%= field.name.replace(/[^a-zA-Z0-9_]/g, "") %>  = target["<%= field.name%>"] ;
-                  <%}%>
-                  if( ! _.isString(_<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%>)){
-                   throw new Error(path + "<%= field.name%> is not a string") ;
-                  }
-                  <%if(field.isArrayOf){%>});<%}%>
-
-              <% }else if( field._class == "subdoc"){ %>
-                  <%if(field.isArrayOf){%>target["<%= field.name%>"].forEach((_<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%> , index:number)=>{
-                  <%}else{%>let _<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%>  = target["<%= field.name%>"] ;
-                  <%}%>
-                  
-                    promArr.push( Index["<%=idName[field.protoSchemaId] %>"].check(_<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%>, isCompleteObj , path+"<%= field.name%>.")
-                      .catch((err)=>{
-                        <%if(field.isArrayOf){%>throw new Error(path+"<%= field.name%> index: "+ index +"is not <%=idName[field.protoSchemaId] %>")
-                        <%}else{%>throw new Error(path+"<%= field.name%> is not <%=idName[field.ref] %>") ;
-                        <%}%>
-
-                      }) )
-                  if(_<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%>._class != null && _<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%>._class != undefined){
-                    promArr.push( Index[_<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%>._class].check(_<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%>, isCompleteObj , path+"<%= field.name%>.")
-                      .catch((err)=>{
-                        <%if(field.isArrayOf){%>throw new Error(path+"<%= field.name%> index: "+ index +"is not a " + _<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%>._class )
-                        <%}else{%>throw new Error(path+"<%= field.name%> is not a " + _<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%>._class ) ;
-                        <%}%>
-
-                      })
-                    )
-                  }
-
-                  <%if(field.isArrayOf){%>});<%}%>
-              <% }else if( field._class == "modelid"){ %>
-                  <%if(field.isArrayOf){%>target["<%= field.name%>"].forEach((_<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%> , index:number)=>{
-                  <%}else{%>let _<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%>  = target["<%= field.name%>"] ;
-                  <%}%>
-                  if( ! _.isString(_<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%>)){
-                      if( ! _.isString(_<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%>)){
-                       throw new Error(path + "<%= field.name%> is not a string") ;
-                      }
-                  }
-                  <%if(field.isArrayOf){%>});<%}%>
-               
-              <% }else if( field._class == "date"){ %>
-                <%if(field.isArrayOf){%>target["<%= field.name%>"].forEach((_<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%> , index:number)=>{
-                <%}else{%>let _<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%>  = target["<%= field.name%>"] ;
-                <%}%>
-                if(! _.isDate(_<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%>)){
-
-                      <%if(field.isArrayOf){%>throw new Error(path+"<%= field.name%> index: "+ index +"is not a Date")
-                      <%}else{%>throw new Error(path+"<%= field.name%> is not a Date") ;
-                      <%}%>
-                }
-                <%if(field.min){ %>
-                  if(_<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%> < new Date("<%=field.min%>")){
-                    <%if(field.isArrayOf){%>throw new Error(path+"<%= field.name%> index: "+ index + "must be after <%=field.min%>" )
-                    <%}else{%>throw new Error(path+"<%= field.name%> must be after <%=field.min%>" ) ;
-                    <%}%>
-                  }
-                <%} %>
-                <%if(field.max){ %>
-                  if(_<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%> < new Date("<%=field.max%>")){
-                    <%if(field.isArrayOf){%>throw new Error(path+"<%= field.name%> index: "+ index + "must be before <%=field.max%>" )
-                    <%}else{%>throw new Error(path+"<%= field.name%> must be before <%=field.max%>" ) ;
-                    <%}%>
-                  }
-                <%} %>
-                <%if(field.isArrayOf){%>});<%}%>
-              <% }else if( field._class == "number"){ %>
-                <%if(field.isArrayOf){%>target["<%= field.name%>"].forEach((_<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%> , index:number)=>{
-                <%}else{%>let _<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%>  = target["<%= field.name%>"] ;
-                <%}%>
-                  if(! _.isNumber(_<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%>)){
-                      <%if(field.isArrayOf){%>throw new Error(path+"<%= field.name%> index: "+ index +"is not a number")
-                      <%}else{%>throw new Error(path+"<%= field.name%> is not a number") ;
-                      <%}%>
-                  }
-                  <%if(field.min){ %>
-                  if(_<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%> > <%=field.min%>){
-                    <%if(field.isArrayOf){%>throw new Error(path+"<%= field.name%> index: "+ index + "must be greater than  <%=field.min%>") 
-                    <%}else{%>throw new Error(path+"<%= field.name%> must be greater than  <%=field.min%>" ) ;
-                    <%}%>
-                  }
-                <%} %>
-                <%if(field.max){ %>
-                  if(_<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%> < <%=field.max%>){
-                    <%if(field.isArrayOf){%>throw new Error(path+"<%= field.name%> index: "+ index + "must be less than <%=field.max%>" )
-                    <%}else{%>throw new Error(path+"<%= field.name%> must be less than <%=field.max%>" ) ;
-                    <%}%>
-                  }
-                <%} %>
-                <%if(field.step){ %>
-                  if(_<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%> % <%=field.step%> > 0){
-                    <%if(field.isArrayOf){%>throw new Error(path+"<%= field.name%> index: "+ index + "must be have a step of <%=field.step%>" )
-                    <%}else{%>throw new Error(path+"<%= field.name%> must be have a step of <%=field.step%>" ) ;
-                    <%}%>
-                  }
-                <%} %>
-
-                <%if(field.isArrayOf){%>});<%}%>
-              <% }else if( field._class == "boolean"){ %>
-                <%if(field.isArrayOf){%>target["<%= field.name%>"].forEach((_<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%> , index:number)=>{
-                <%}else{%>let _<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%>  = target["<%= field.name%>"] ;
-                <%}%>
-                  if(! _.isBoolean(_<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%>)){
-                    <%if(field.isArrayOf){%>throw new Error(path+"<%= field.name%> index: "+ index +"is not a boolean")
-                    <%}else{%>throw new Error(path+"<%= field.name%> is not a boolean") ;
-                    <%}%>
-                  }
-                <%if(field.isArrayOf){%>});<%}%>
-
-              <% }else if( field._class == "string" || field._class == "texte" || field._class == "htmltexte" || field._class == "password" ){ %>
-                <%if(field.isArrayOf){%>target["<%= field.name%>"].forEach((_<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%> , index:number)=>{
-                <%}else{%>let _<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%>  = target["<%= field.name%>"] ;
-                <%}%>
-
-                 if(! _.isString(_<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%>)){
-                    <%if(field.isArrayOf){%>throw new Error(path+"<%= field.name%> index: "+ index +"is not a string")
-                    <%}else{%>throw new Error(path+"<%= field.name%> is not a string") ;
-                    <%}%>
-                  }
-                  <%if(field.match){ %>
-                    if(!_<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%>.match(<%=field.match%>)){
-                      <%if(field.isArrayOf){%>throw new Error(path+"<%= field.name%> index: "+ index + " dont match <%=field.match%>" )
-                      <%}else{%>throw new Error(path+"<%= field.name%> dont match <%=field.match%>" ) ;
-                      <%}%>
-                    }
-                  <%} %>
-                  <%if(field.enum && field.enum.length>0){%>
-                    let _enum_<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%>:string[] = ["<%=field.enum.join('","')%>"] ;
-                    if(_enum_<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%>.indexOf(_<%= field.name.replace(/[^a-zA-Z0-9_]/g, "")%>)==-1){
-                        <%if(field.isArrayOf){%>throw new Error(path+"<%= field.name%> index: "+ index + " dont match one of <%=field.enum.join(' , ')%>" ) ;
-                        <%}else{%>throw new Error(path+"<%= field.name%> dont match one of <%=field.enum.join(' , ')%>" ) ;
-                        <%}%>
-                    }
-                  <%}%>
-                 <%if(field.isArrayOf){%>});<%}%>
-              <% } else { %>
-               // public "<%= field.name%>":I<%=field._class %>;
-              <% } %>
-              
-           }
-           <% }) %>
-           
-          return Promise.all(promArr).then(()=>{return true}) ;
-        }).catch((err)=>{
-          throw err ;
-        })
-
-
-      }
-
-      public static create(target:any, path:string=""):Promise<Model_<%= protoSchema.name %>>{
-        return Model_<%= protoSchema.name %>.check(target, true, path).then(()=>{
-          return new Model_<%= protoSchema.name %>(target) ;
-        })
-      }
+       
 
    }

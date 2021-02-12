@@ -1,7 +1,7 @@
 import * as _ from "lodash" ;
 import * as Interface from "./Interfaces" ;
 import * as Index from "./Index" ;
-import {Base } from "../Base" ;
+import {Base } from "@hfdev/utils" ;
 
 
 import {Model_field } from "./Model_field"
@@ -112,120 +112,6 @@ export class Model_string extends   Model_field   implements Interface.Istring {
        
 
 
-       public static check(target:any , isCompleteObj:boolean=true,  path:string=""):Promise<boolean>{
-        return super.check(target, isCompleteObj , path)
-        .then((boolean)=>{
-          var promArr:Array<Promise<boolean>> = [Promise.resolve(true)] ;
-          
-              
-              if(target["default"] != null && target["default"] != undefined ){
-              
-                let _default  = target["default"] ;
-                
-
-                 if(! _.isString(_default)){
-                    throw new Error(path+"default is not a string") ;
-                    
-                  }
-                  
-                  
-                 
-              
-              
-           }
-           
-              
-              if(target["lowercase"] != null && target["lowercase"] != undefined ){
-              
-                let _lowercase  = target["lowercase"] ;
-                
-                  if(! _.isBoolean(_lowercase)){
-                    throw new Error(path+"lowercase is not a boolean") ;
-                    
-                  }
-                
-
-              
-              
-           }
-           
-              
-              if(target["uppercase"] != null && target["uppercase"] != undefined ){
-              
-                let _uppercase  = target["uppercase"] ;
-                
-                  if(! _.isBoolean(_uppercase)){
-                    throw new Error(path+"uppercase is not a boolean") ;
-                    
-                  }
-                
-
-              
-              
-           }
-           
-              
-              if(target["trim"] != null && target["trim"] != undefined ){
-              
-                let _trim  = target["trim"] ;
-                
-                  if(! _.isBoolean(_trim)){
-                    throw new Error(path+"trim is not a boolean") ;
-                    
-                  }
-                
-
-              
-              
-           }
-           
-              
-              if(target["match"] != null && target["match"] != undefined ){
-              
-                let _match  = target["match"] ;
-                
-
-                 if(! _.isString(_match)){
-                    throw new Error(path+"match is not a string") ;
-                    
-                  }
-                  
-                  
-                 
-              
-              
-           }
-           
-              
-              if(target["enum"] != null && target["enum"] != undefined ){
-              
-                target["enum"].forEach((_enum , index:number)=>{
-                
-
-                 if(! _.isString(_enum)){
-                    throw new Error(path+"enum index: "+ index +"is not a string")
-                    
-                  }
-                  
-                  
-                 });
-              
-              
-           }
-           
-           
-          return Promise.all(promArr).then(()=>{return true}) ;
-        }).catch((err)=>{
-          throw err ;
-        })
-
-
-      }
-
-      public static create(target:any, path:string=""):Promise<Model_string>{
-        return Model_string.check(target, true, path).then(()=>{
-          return new Model_string(target) ;
-        })
-      }
+       
 
    }

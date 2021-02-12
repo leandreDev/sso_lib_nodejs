@@ -1,0 +1,56 @@
+
+import {IHttpServiceBase , IHttpServiceAdminBase, IHttpResult  } from "@hfdev/utils" ;
+
+import * as Interfaces from "../../lib/modelObj/Interfaces" ;
+
+
+
+
+
+
+<% _.forEach(views , function(view){ %>
+/**
+	accès à la vue :<%=view.name%>     <%=view.description%>
+ */
+export interface IPlateforme_view_<%=view.name%> {
+  /**
+	génére une requette sur la vue <%=view.name%>
+	<%=view.decription%>
+	 */
+	get( <% _.forEach(view.params , function(param){ %><%=param.paramName%>:<%if(param.type=="objectId"){%>string<%}else{%><%=param.type%><%}%> , <%})%> query?: string, headers?: any ,  ): Promise<IHttpResult<<%=idInterface[view.output._id]%>>> 
+
+}
+<%}) %>
+
+
+export interface IView_plateform {
+  <% _.forEach(views , function(view){ %>
+	/**
+	accès à la vue :<%=view.name%>     <%=view.description%>
+	 */
+	<%=view.name%>:IPlateforme_view_<%=view.name%> ;
+	<%}) %>
+}
+
+
+
+
+export interface IPlateforme {
+
+  collections:{
+    <% _.forEach(datas , function(collection){ %>
+
+		<%=collection.name%>:IHttpServiceBase<Interfaces.I<%=collection.name%>>  ;
+		admin_<%=collection.name%>: IHttpServiceAdminBase<Interfaces.I<%=collection.name%>> ;
+
+		<% _.forEach(collection._child , function(subcollection){ %>
+		 
+		<%=subcollection.name%>: IHttpServiceBase<Interfaces.I<%=subcollection.name%>> ;
+		admin_<%=subcollection.name%>: IHttpServiceAdminBase<Interfaces.I<%=subcollection.name%>>  ;
+
+		 <%}) %>
+	<%}) %>
+  }
+
+  views:IView_plateform
+}

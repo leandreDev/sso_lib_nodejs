@@ -1,0 +1,33 @@
+  import {IBase } from "../IBase" ;
+  export interface I{
+
+  }
+  <% _.forEach(datas , function(protoSchema){ %>
+    /**
+    interface de la class <%= protoSchema.name %> 
+    description <%= protoSchema.description %>
+   */
+    export interface I<%= protoSchema.name %> extends <%if(protoSchema.parentModel){%>  I<%=idName[protoSchema.parentModel] %><% }else {%> IBase <%}%>{
+        <% _.forEach(protoSchema.fields , function(field){ %>
+              <% if(field._class == "objectid" ){ %>
+               "<%= field.name%>"<%if(!field.required){ %>?<%}%>:string<%if(field.isArrayOf){%>[]<%}%> | I<%=idName[field.ref] %><%if(field.isArrayOf){%>[]<%}%>;
+              <% }else if( field._class == "subdoc"){ %>
+               "<%= field.name%>"<%if(!field.required){ %>?<%}%>:I<%=idName[field.protoSchemaId] %><%if(field.isArrayOf){%>[]<%}%>;
+              <% }else if( field._class == "modelid"){ %>
+               "<%= field.name%>"<%if(!field.required){ %>?<%}%>:string<%if(field.isArrayOf){%>[]<%}%>;
+              <% }else if( field._class == "date"){ %>
+               "<%= field.name%>"<%if(!field.required){ %>?<%}%>:Date<%if(field.isArrayOf){%>[]<%}%>;
+              <% }else if( field._class == "number"){ %>
+               "<%= field.name%>"<%if(!field.required){ %>?<%}%>:number<%if(field.isArrayOf){%>[]<%}%>;
+              <% }else if( field._class == "boolean"){ %>
+               "<%= field.name%>"<%if(!field.required){ %>?<%}%>:boolean<%if(field.isArrayOf){%>[]<%}%>;
+              <% }else if( field._class == "string" ||  field._class == "texte" ||  field._class == "htmltexte" ||  field._class == "password"){ %>
+               "<%= field.name%>"<%if(!field.required){ %>?<%}%>:string<%if(field.isArrayOf){%>[]<%}%>;
+              <% }else if( field._class == "object" ){ %>
+               "<%= field.name%>"<%if(!field.required){ %>?<%}%>:any<%if(field.isArrayOf){%>[]<%}%>;              
+              <% } else { %>
+               "<%= field.name%>"<%if(!field.required){ %>?<%}%>:I<%=field._class %><%if(field.isArrayOf){%>[]<%}%>;
+              <% } %>
+       <% }) %>
+   }
+<%}) %>

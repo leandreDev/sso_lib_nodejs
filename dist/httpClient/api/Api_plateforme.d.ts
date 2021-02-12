@@ -1,6 +1,6 @@
-import { UtilsSecu } from "utils";
-import { HttpServiceBase } from "../HttpServiceBase";
+import { UtilsSecu, HttpServiceBase, HttpServiceAdminBase } from "@hfdev/utils";
 import * as Interfaces from "../../lib/modelObj/Interfaces";
+import { IPlateforme } from './IPlateforme';
 export declare class api_collection_plateform {
     constructor(conf: any);
     protected url: string;
@@ -13,14 +13,7 @@ export declare class api_collection_plateform {
      
     */
     protoschema: HttpServiceBase<Interfaces.Iprotoschema>;
-    /**
-     service d'accès à la collection :oidc_Client
-     desc: description d'un client openId (c'est une application)
-     
-
-     
-    */
-    oidc_Client: HttpServiceBase<Interfaces.Ioidc_Client>;
+    admin_protoschema: HttpServiceAdminBase<Interfaces.Iprotoschema>;
     /**
      service d'accès à la collection :oidc_account
      desc: compte de l'utilisateur
@@ -29,12 +22,22 @@ export declare class api_collection_plateform {
      
     */
     oidc_account: HttpServiceBase<Interfaces.Ioidc_account>;
+    admin_oidc_account: HttpServiceAdminBase<Interfaces.Ioidc_account>;
+    /**
+     service d'accès à la collection :oidc_Client
+     desc: description d'un client openId (c'est une application)
+     
+
+     
+    */
+    oidc_Client: HttpServiceBase<Interfaces.Ioidc_Client>;
+    admin_oidc_Client: HttpServiceAdminBase<Interfaces.Ioidc_Client>;
 }
 export declare class api_view_plateform {
     conf: any;
     constructor(conf: any);
 }
-export declare class Api_plateforme {
+export declare class Api_plateforme implements IPlateforme {
     conf: any;
     constructor(conf: any);
     /**

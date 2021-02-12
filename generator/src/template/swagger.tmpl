@@ -1,0 +1,579 @@
+{
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+      <% _.forEach(datas , function(protoSchema, index){ %>
+        <%if(index !== 0){%>,
+          <%}%>
+			"I<%= protoSchema.name %>": {
+        <%if(protoSchema.parentModel){%>
+        "allOf:" :{
+          "$ref": "#/components/schemas/î<%=idName[protoSchema.parentModel] %>",
+        <%}%>
+        "type": "object",
+				"properties": {
+          <% _.forEach(protoSchema.fields , function(field, index){ %>
+            <%if(index !== 0){%>,
+              <%}%>
+            "<%= field.name%>" :{
+              <%if(field.isArrayOf){%>
+              "type": "array",
+              "items":{
+              <%}%>
+            <% if(field._class == "objectid" ){ %>
+              "type":"string"
+            <% }else if( field._class == "subdoc"){ %>
+              "$ref": "#/components/schemas/I<%=idName[field.protoSchemaId] %>"
+            <% }else if( field._class == "modelid"){ %>
+              "type":"string"
+            <% }else if( field._class == "date"){ %>
+              "type":"string",
+              "format": "date"
+            <% }else if( field._class == "number"){ %>
+              "type":"number"
+             
+            <% }else if( field._class == "boolean"){ %>
+              "type" : "boolean"
+             
+            <% }else if( field._class == "string" ||  field._class == "texte" ||  field._class == "htmltexte" ||  field._class == "password"){ %>
+              "type" : "string"
+            <% }else if( field._class == "object" ){ %>
+              "type" : "object"  ,
+              "additionalProperties": true          
+            <% } else { %>
+              "type" : "object" ,
+              "additionalProperties": true  
+            <% } %>
+            <%if(field.isArrayOf){%>
+            }
+              <%}%>
+            <%if(!field.required){ %>,
+              "nullable": true<%}%>
+          }
+          
+     <% }) %>
+				},
+				"required": [
+          <% _.forEach(_.filter(protoSchema.fields , function(o){o.required}) , function(field, index){ %>
+            <%if(index !== 0){%>,<%}%>"<%=field.name%>"
+            <% }) %>
+				]
+      }
+      <%if(protoSchema.parentModel){%>
+      }
+        <%}%>
+      
+      ,"IHttpResultOfI<%= protoSchema.name %>": {
+				"properties": {
+					"code": {
+						"type": "number",
+						"format": "double"
+					},
+					"message": {
+						"type": "string",
+						"nullable": true
+					},
+					"name": {
+						"type": "string",
+						"nullable": true
+					},
+					"stack": {
+						"type": "string",
+						"nullable": true
+					},
+					"meta": {
+						"properties": {
+							"count": {
+								"type": "number",
+								"format": "double"
+							},
+							"nb": {
+								"type": "number",
+								"format": "double"
+							},
+							"pageSize": {
+								"type": "number",
+								"format": "double"
+							},
+							"offset": {
+								"type": "number",
+								"format": "double"
+							},
+							"mongoquery": {
+								"additionalProperties": true,
+								"type": "object"
+							}
+						},
+						"required": [
+							"offset",
+							"pageSize",
+							"nb",
+							"count"
+						],
+						"type": "object",
+						"nullable": true
+					},
+					"response": {
+						"items": {
+							"$ref": "#/components/schemas/î<%=idName[protoSchema.parentModel] %>"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"code",
+					"response"
+				],
+				"type": "object",
+				"additionalProperties": true
+			}
+    <%})%>
+    
+    ,"IHttpResultOfstring": {
+      "properties": {
+        "code": {
+          "type": "number",
+          "format": "double"
+        },
+        "message": {
+          "type": "string",
+          "nullable": true
+        },
+        "name": {
+          "type": "string",
+          "nullable": true
+        },
+        "stack": {
+          "type": "string",
+          "nullable": true
+        },
+        "meta": {
+          "properties": {
+            "count": {
+              "type": "number",
+              "format": "double"
+            },
+            "nb": {
+              "type": "number",
+              "format": "double"
+            },
+            "pageSize": {
+              "type": "number",
+              "format": "double"
+            },
+            "offset": {
+              "type": "number",
+              "format": "double"
+            },
+            "mongoquery": {
+              "additionalProperties": true,
+              "type": "object"
+            }
+          },
+          "required": [
+            "offset",
+            "pageSize",
+            "nb",
+            "count"
+          ],
+          "type": "object",
+          "nullable": true
+        },
+        "response": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "code",
+        "response"
+      ],
+      "type": "object",
+      "additionalProperties": true
+    },
+
+    "IHttpResultOfnumber": {
+      "properties": {
+        "code": {
+          "type": "number",
+          "format": "double"
+        },
+        "message": {
+          "type": "string",
+          "nullable": true
+        },
+        "name": {
+          "type": "string",
+          "nullable": true
+        },
+        "stack": {
+          "type": "string",
+          "nullable": true
+        },
+        "meta": {
+          "properties": {
+            "count": {
+              "type": "number",
+              "format": "double"
+            },
+            "nb": {
+              "type": "number",
+              "format": "double"
+            },
+            "pageSize": {
+              "type": "number",
+              "format": "double"
+            },
+            "offset": {
+              "type": "number",
+              "format": "double"
+            },
+            "mongoquery": {
+              "additionalProperties": true,
+              "type": "object"
+            }
+          },
+          "required": [
+            "offset",
+            "pageSize",
+            "nb",
+            "count"
+          ],
+          "type": "object",
+          "nullable": true
+        },
+        "response": {
+          "items": {
+            "type": "number"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "code",
+        "response"
+      ],
+      "type": "object",
+      "additionalProperties": true
+    },
+    "IHttpResultOfboolean": {
+      "properties": {
+        "code": {
+          "type": "number",
+          "format": "double"
+        },
+        "message": {
+          "type": "string",
+          "nullable": true
+        },
+        "name": {
+          "type": "string",
+          "nullable": true
+        },
+        "stack": {
+          "type": "string",
+          "nullable": true
+        },
+        "meta": {
+          "properties": {
+            "count": {
+              "type": "number",
+              "format": "double"
+            },
+            "nb": {
+              "type": "number",
+              "format": "double"
+            },
+            "pageSize": {
+              "type": "number",
+              "format": "double"
+            },
+            "offset": {
+              "type": "number",
+              "format": "double"
+            },
+            "mongoquery": {
+              "additionalProperties": true,
+              "type": "object"
+            }
+          },
+          "required": [
+            "offset",
+            "pageSize",
+            "nb",
+            "count"
+          ],
+          "type": "object",
+          "nullable": true
+        },
+        "response": {
+          "items": {
+            "type": "boolean"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "code",
+        "response"
+      ],
+      "type": "object",
+      "additionalProperties": true
+    },
+    "IHttpResultOfdate": {
+      "properties": {
+        "code": {
+          "type": "number",
+          "format": "double"
+        },
+        "message": {
+          "type": "string",
+          "nullable": true
+        },
+        "name": {
+          "type": "string",
+          "nullable": true
+        },
+        "stack": {
+          "type": "string",
+          "nullable": true
+        },
+        "meta": {
+          "properties": {
+            "count": {
+              "type": "number",
+              "format": "double"
+            },
+            "nb": {
+              "type": "number",
+              "format": "double"
+            },
+            "pageSize": {
+              "type": "number",
+              "format": "double"
+            },
+            "offset": {
+              "type": "number",
+              "format": "double"
+            },
+            "mongoquery": {
+              "additionalProperties": true,
+              "type": "object"
+            }
+          },
+          "required": [
+            "offset",
+            "pageSize",
+            "nb",
+            "count"
+          ],
+          "type": "object",
+          "nullable": true
+        },
+        "response": {
+          "items": {
+            "type": "string",
+            "format": "date"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "code",
+        "response"
+      ],
+      "type": "object",
+      "additionalProperties": true
+    },
+    "IHttpResultOfobject": {
+      "properties": {
+        "code": {
+          "type": "number",
+          "format": "double"
+        },
+        "message": {
+          "type": "string",
+          "nullable": true
+        },
+        "name": {
+          "type": "string",
+          "nullable": true
+        },
+        "stack": {
+          "type": "string",
+          "nullable": true
+        },
+        "meta": {
+          "properties": {
+            "count": {
+              "type": "number",
+              "format": "double"
+            },
+            "nb": {
+              "type": "number",
+              "format": "double"
+            },
+            "pageSize": {
+              "type": "number",
+              "format": "double"
+            },
+            "offset": {
+              "type": "number",
+              "format": "double"
+            },
+            "mongoquery": {
+              "additionalProperties": true,
+              "type": "object"
+            }
+          },
+          "required": [
+            "offset",
+            "pageSize",
+            "nb",
+            "count"
+          ],
+          "type": "object",
+          "nullable": true
+        },
+        "response": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "code",
+        "response"
+      ],
+      "type": "object",
+      "additionalProperties": true
+    }
+
+
+    },
+    
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": "<%=service.name%>",
+		"version": "<%=packageJson.version%>",
+		"description": "<%=service.description%>"
+	},
+	"openapi": "3.0.0",
+	"paths": {
+
+    
+    <% _.forEach(service.paths , function(path, index){ %>
+
+      <%if(index !== 0){%>,<%}%>
+        "/<%=path.path.replace('${' , '{')%>":{
+          "<%=path.verbe %>":{
+            "operationId": "<%=path.name%>",
+            "responses": {
+              "200": {
+                "content": {
+                  "application/json": {
+                    "schema": {
+                     
+                      <% if(idName[path.returnType] == "objectid" ){ %>
+                        "$ref": "#/components/schemas/IHttpResultOfstring"
+                      <% }else if(idName[path.returnType] == "modelid"){ %>
+                        "$ref": "#/components/schemas/IHttpResultOfstring"
+                      <% }else if( idName[path.returnType] == "date"){ %>
+                        "$ref": "#/components/schemas/IHttpResultOfdate"
+                      <% }else if( idName[path.returnType] == "number"){ %>
+                        "$ref": "#/components/schemas/IHttpResultOfnumber"
+                      <% }else if( idName[path.returnType] == "boolean"){ %>
+                        "$ref": "#/components/schemas/IHttpResultOfboolean"
+                      <% }else if( idName[path.returnType] == "string" ){ %>
+                        "$ref": "#/components/schemas/IHttpResultOfstring"
+                      <% }else if( idName[path.returnType] == "object" ){ %>
+                        "$ref": "#/components/schemas/IHttpResultOfobject"      
+                      <% } else { %>
+                        "$ref": "#/components/schemas/IHttpResultOfI<%=idName[path.returnType]%>"
+                      <% } %>
+                      
+                    }
+                  }
+                },
+                "description": "Ok"
+              }
+            },
+            "security": [],
+            "parameters": [
+              <%_.forEach(path.pathParams , function(pathParam, index){ %>
+              <%if(index !== 0){%>,<%}%>
+              {
+                "in": "path",
+                "name": "<%=pathParam.name%>",
+                "required": <%if(pathParam.requiere){%>true<%}else{%>false<%}%>,
+                "schema": {
+                  <% if(idName[pathParam.type] == "objectid" ){ %>
+                    "type": "string"
+                  <% }else if(idName[pathParam.type] == "modelid"){ %>
+                    "type": "string"
+                  <% }else if( idName[pathParam.type] == "date"){ %>
+                    "type": "string",
+                    "format":"date"
+                  <% }else if( idName[pathParam.type] == "number"){ %>
+                    "type": "numlber"
+                  <% }else if( idName[pathParam.type] == "boolean"){ %>
+                    "type": "boolean"
+                  <% }else if( idName[pathParam.type] == "string" ){ %>
+                    "type": "string"
+                  <% }else if( idName[pathParam.type] == "object" ){ %>
+                    "type": "string"      
+                  <% } else { %>
+                    "type": "string"
+                  <% } %>
+                }
+              }
+              <% }) %>
+            ]
+            <% if(path.bodyParam ){%>
+            ,"requestBody": {
+              "content": {
+                "application/json": {
+                  "schema": {
+                    <% if( idName[path.bodyParam] == "date"){ %>
+                      "$ref": "#/components/schemas/IHttpResultOfdate"
+                    <% }else if( idName[path.bodyParam] == "number"){ %>
+                      "$ref": "#/components/schemas/IHttpResultOfnumber"
+                    <% }else if( idName[path.bodyParam] == "boolean"){ %>
+                      "$ref": "#/components/schemas/IHttpResultOfboolean"
+                    <% }else if( idName[path.bodyParam] == "string" ){ %>
+                      "$ref": "#/components/schemas/IHttpResultOfstring"
+                    <% }else if( idName[path.bodyParam] == "object" ){ %>
+                      "$ref": "#/components/schemas/IHttpResultOfobject"      
+                    <% } else { %>
+                      "$ref": "#/components/schemas/IHttpResultOfI<%=idName[path.bodyParam]%>"
+                    <% } %>
+                  }
+                }
+              }
+            }
+            <%}%>
+          }
+        }
+
+      <% }) %>
+    
+
+
+  }
+		
+	,
+	"servers": [
+		{
+			"url": "https://localhost:3000/v0"
+		}
+	]
+}

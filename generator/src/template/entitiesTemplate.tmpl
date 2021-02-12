@@ -1,0 +1,344 @@
+import * as _ from "lodash" ;
+import * as Index from "./Index" ;
+import {mongo , Entity} from "@hfdev/utils" ;
+
+<%if(protoSchema.parentModel){%>
+import {Entity_<%= idName[protoSchema.parentModel] %> } from "./<%= idName[protoSchema.parentModel] %>"
+<%}%>
+
+/**
+  <%= protoSchema.description %>
+*/
+export class Entity_<%= protoSchema.name %> extends <%if(protoSchema.parentModel){%>  Entity_<%=idName[protoSchema.parentModel] %>  <% } else {%> Entity <%}%>  {
+
+
+
+   
+  static cast(obj:any={} , castChildClass:boolean=false){
+    
+    if((!castChildClass) && obj._class && obj._class != '<%= protoSchema.name %>' && [<% _.forEach(protoSchema._child , function(child){ %>'<%=child.name%>',<%})%>].indexOf(obj._class)!==-1){
+       Index['Entity_' + obj._class].cast(obj , true) ;
+       return ;
+    }
+    
+    <%if(protoSchema.parentModel){%>Entity_<%=idName[protoSchema.parentModel] %>.cast(obj , true)<% } else {%>Entity.cast(obj, true) <%}%>
+    
+    <% _.forEach(protoSchema.fields , function(field){ %>
+        <%if(field.isArrayOf){%>
+        if(obj["<%= field.name%>"] != undefined && obj["<%= field.name%>"] != null && _.isArray(obj["<%= field.name%>"])){
+          <% if(field._class == "objectid" || field._class == "modelid" ){ %>
+          obj["<%= field.name%>"] = obj["<%= field.name%>"].map((value)=>{
+            if(_.isString(value)){
+              return new mongo.ObjectId(value)  ;
+            }else if(value._id){
+              return new mongo.ObjectId(value._id)   ;
+            }
+          })
+          <% }else if( field._class == "subdoc"){ %>
+
+            obj["<%= field.name%>"].forEach((value)=>{
+              
+                Index.Entity_<%=idName[field.protoSchemaId] %>.cast(value) ;
+                <%if(!idName[field.protoSchemaId]){%>
+                  //<%=field.protoSchemaId%>
+                <%}%>
+              
+            })
+          <% }else if( field._class == "date"){ %>
+            obj["<%= field.name%>"] = obj["<%= field.name%>"].map((value)=>{
+              return new Date(value);
+            })
+            
+          <% }else if( field._class == "number"){ %>
+
+           obj["<%= field.name%>"] = obj["<%= field.name%>"].map((value)=>{
+              return new Number(value).valueOf();
+            })
+          <% }else if( field._class == "boolean"){ %>
+           obj["<%= field.name%>"] = obj["<%= field.name%>"].map((value)=>{
+              return new Boolean(value).valueOf();
+            })
+          <% }else if( field._class == "string" || field._class == "texte" || field._class == "htmltexte"  || field._class == "password"  ){ %>
+           obj["<%= field.name%>"] = obj["<%= field.name%>"].map((value)=>{
+              return value.toString();
+            })
+          <% }else if( field._class == "object"  ){ %>
+           obj["<%= field.name%>"] = obj["<%= field.name%>"].map((value)=>{
+              return value;
+            })
+          <% } else { %>
+
+           obj["<%= field.name%>"] = obj["<%= field.name%>"].map((value)=>{
+              return value ;
+            })
+          <%}%>
+        }
+        <%}else{ %>
+        if(obj["<%= field.name%>"] != undefined){
+          <% if(field._class == "objectid" || field._class == "modelid" ){ %>
+          if(_.isString(obj["<%= field.name%>"])){
+            obj["<%= field.name%>"] = new mongo.ObjectId(obj["<%= field.name%>"]);
+          }else if(obj["<%= field.name%>"]._id){
+            obj["<%= field.name%>"] = new mongo.ObjectId(obj["<%= field.name%>"]._id) ;
+          }
+          <% }else if( field._class == "subdoc"){ %>
+           
+              Index.Entity_<%=idName[field.protoSchemaId] %>.cast(obj["<%= field.name%>"]) ;
+              //<%=field.protoSchemaId%>
+            
+          <% }else if( field._class == "date"){ %>
+            obj["<%= field.name%>"] = new Date(obj["<%= field.name%>"]) ;
+          <% }else if( field._class == "number"){ %>
+           obj["<%= field.name%>"] = new Number(obj["<%= field.name%>"]).valueOf();
+          <% }else if( field._class == "boolean"){ %>
+           obj["<%= field.name%>"] = new Boolean(obj["<%= field.name%>"]).valueOf() ;
+          <% }else if( field._class == "string" || field._class == "texte" || field._class == "htmltexte"  || field._class == "password" ){ %>
+           obj["<%= field.name%>"] = obj["<%= field.name%>"].toString() ;
+           <% }else if( field._class == "object" ){ %>
+           obj["<%= field.name%>"] = obj["<%= field.name%>"] ;
+          <% } else { %>
+           obj["<%= field.name%>"] = obj["<%= field.name%>"] ;
+          <%}%>
+        }
+        <%} %>
+    <% }) %>
+  }
+
+
+ <% _.forEach(protoSchema.fields , function(field){ %>
+<%if(field.name.indexOf('-')===-1){%>
+public static check<%=field.name%>(val:any, path:string =null):string[]{
+         if(val == null){
+            return null ;
+         }
+         let res:string[] = [] ;
+         <% if(field._class == "objectid"  || field._class == "modelid"){ %>
+          if( ! mongo.ObjectId.isValid(val)){
+            res.push(`<%='${path}'%>  is not an ObjectId`) ;     
+          }
+         <%}%>
+         <% if(field._class == "string" || field._class == "texte" || field._class == "htmltexte"  || field._class == "password"  ){ %>
+          <%if(field.match){ %>
+            if(! val.match(/<%=field.match%>/)){
+              res.push(`<%='${path}'%> dont match <%=field.match%>` );
+            }
+          <%} %>
+          <%if(field.enum && field.enum.length>0){%>
+            let _enum:string[] = ["<%=field.enum.join('","')%>"] ;
+            if(_enum.indexOf(val)==-1){
+              res.push(`<%='${path}'%> dont match one of <%=field.enum.join(' , ')%>`) ;
+            }
+          <%}%>
+         <%}%>
+         <% if(field._class == "date"  ){ %>
+          if( ! _.isDate(val)){
+            res.push(`<%='${path}'%>  is not a Date`) ;
+          }
+          <%if(field.min){ %>
+            if(val < new Date("<%=field.min%>")){
+              res.push(`<%='${path}'%> must be after <%=field.min%>`) ;
+            }
+          <%} %>
+          <%if(field.max){ %>
+            if(val< new Date("<%=field.max%>")){
+              res.push(`<%='${path}'%>" must be before <%=field.max%>`) ;
+            }
+          <%} %>
+         <%}%>
+
+         <% if(field._class == "number"  ){ %>
+          if( ! _.isNumber(val)){
+            res.push(`<%='${path}'%> is not a number`) ; 
+          }
+        
+         <%if(field.min){ %>
+          if(val > <%=field.min%>){
+            res.push(`<%='${path}'%> must be greater than  <%=field.min%>`) ;
+          }
+        <%} %>
+        <%if(field.max){ %>
+          if(val < <%=field.max%>){
+            res.push(`<%='${path}'%> must be less than <%=field.max%>`) ;
+          }
+        <%} %>
+
+        <%if(field.step){ %>
+          if(val % <%=field.step%> !== 0){
+            res.push(`<%='${path}'%> must be % <%=field.step%>`) ;
+          }
+        <%} %>
+
+        <%}%>
+
+        <% if(field._class == "boolean"  ){ %>
+          if( ! _.isBoolean(val)){
+            res.push(`<%='${path}'%>  is not a boolean`) ;   
+          }
+        <%}%>
+        <% if(field._class == "subdoc"  ){ %>
+          let result:string[] ;
+          if( val._class ){
+            result = Index['Entity_' + val._class].check(val , false , path  ) ;
+          }else{
+            result = Index.Entity_<%=idName[field.protoSchemaId] %>.check(val , false , path  ) ;
+            //<%=field.protoSchemaId%>
+
+          }
+          res = [...res , ...result] ;
+        <%}%>
+          if(res.length === 0){
+            return null ;
+          }else{
+            return res ;
+          }
+        }
+<%}%>
+
+       
+ <%})%>
+
+public static check(target:any, isCompleteObj:boolean=true,  path:string=""):string[]{
+        var err:string[]  = []; 
+        let res:string[] ;
+        
+          <%if(protoSchema.parentModel){%>err = Entity_<%= idName[protoSchema.parentModel] %>.check(target, isCompleteObj , path) ;<% }%>
+          <% _.forEach(protoSchema.fields , function(field){ %>
+              <%if(field.name.indexOf('-')===-1){%>
+
+              <% if(field.required){ %>
+              if( isCompleteObj && (target.<%= field.name%> == null || target.<%= field.name%> == undefined) ){
+                err.push(path + ".<%= field.name%> is required") ;
+              }
+              <% } %>
+
+              if(target.<%= field.name%> != null && target.<%= field.name%> != undefined ){
+                
+                <% if(field.isArrayOf){ %>
+                target.<%= field.name%>.forEach((data, index)=>{
+                  res = Entity_<%=protoSchema.name%>.check<%=field.name%>(target.<%= field.name%>[index] , `<%='${path}.' + field.name + '.${index}' %>` ) ;
+                  if(res && res.length > 0){
+                    err = [...err , ...res] ;
+                  }
+                })
+                <%}else{%>
+                res = Entity_<%=protoSchema.name%>.check<%=field.name%>(target.<%= field.name%> , `<%='${path}.' + field.name %>`) ;
+                if(res && res.length > 0){
+                  err = [...err , ...res] ;
+                }               
+                <%}%>
+              }
+
+              <%}%>
+              
+           <% }) %>
+           
+
+        return err ;
+      }
+   
+public static castQueryParam(path: string, value: any): any {
+        let key:string = '' ;
+        let subPath:string = '' ;
+
+        if(value === null){
+          return null ;
+        }
+        if(path.indexOf('.') === -1){
+          key = path ;
+        }else{
+          let arr:string[] = path.split('.') ;
+          key = arr.shift() ;
+          subPath = arr.join('.') ;
+          if(subPath === null || subPath.trim() === ''){
+            throw new Error(`subPath is empty for <%='${path}'%> <%='${value}'%>`)
+          }
+        }
+        if(key === null || key.trim() === ''){
+          throw new Error(`key path is empty for <%='${path}'%> <%='${value}'%>`)
+        }
+        switch (key) {
+          <% _.forEach(protoSchema.fields , function(field){ %>
+            case '<%=field.name%>':
+              //<%=field._class%>
+              <% if(field._class == "subdoc"  ){ %>
+              if(value._class){
+                return  Index['Entity_'+value._class].castQueryParam(subPath , value) ;
+              }else{
+                return Index.Entity_<%=idName[field.protoSchemaId] %>.castQueryParam(subPath ,value) ;
+              }
+              <%}%>
+              <% if(field._class == "number"  ){ %>
+              return new Number(value).valueOf() ;
+              <%}%>
+              <% if(field._class == "boolean"  ){ %>
+              return new Boolean(value).valueOf() ;
+              <%}%>
+              <% if(field._class == "date"  ){ %>
+              return new Date(value) ;
+              <%}%>
+              <% if(field._class == "object"  ){ %>
+              return value ;
+              <%}%>
+              <% if(field._class == "objectid" || field._class == "modelid"  ){ %>
+              return new mongo.ObjectId(value) ;
+              <%}%>
+              <% if(field._class == "string" || field._class == "texte" || field._class == "htmltexte"  || field._class == "password"  ){ %>
+              return new String(value).valueOf() ;
+              <%}%>
+            break;
+          <%})%>
+         
+          default:
+            return <%if(protoSchema.parentModel){%>Entity_<%=idName[protoSchema.parentModel] %>  <% } else {%>Entity<%}%>.castQueryParam(key, value) ;
+            break;
+        }
+      }
+
+public static getClassNameOfProp(path:string):string{
+        let key:string = '' ;
+        let subPath:string = '' ;
+
+        if(path.indexOf('.') === -1){
+          key = path ;
+        }else{
+          let arr:string[] = path.split('.') ;
+          key = arr.shift() ;
+          subPath = arr.join('.') ;
+          if(subPath === null || subPath.trim() === ''){
+            throw new Error(`subPath is empty for <%='${path}'%> `)
+          }
+        }
+        if(key === null || key.trim() === ''){
+          throw new Error(`key path is empty for <%='${path}'%>`)
+        }
+        switch (key) {
+          
+      <% _.forEach(protoSchema.fields , function(field){ %>
+      case '<%=field.name%>':
+       <% if(field._class != "subdoc" && field._class != "objectid"  && field._class != "modelid"   ){ %>
+             return null ;
+       <%}%>
+        <% if(field._class == "subdoc"  ){ %>
+              
+             return Index.Entity_<%=idName[field.protoSchemaId] %>.getClassNameOfProp(subPath) ;
+              
+       <%}%>
+       <% if(field._class == "objectid"  ){ %>
+              return '<%=idName[field.ref] %>' ;
+              <%}%>
+      <% if( field._class == "modelid"  ){ %>
+              return 'protoschema' ;
+              <%}%>
+      <%})%>
+        default:
+            return <%if(protoSchema.parentModel){%>Entity_<%=idName[protoSchema.parentModel] %>  <% } else {%>Entity<%}%>.getClassNameOfProp(key) ;
+            break;
+        }
+       
+}
+
+
+   }
+
+
+

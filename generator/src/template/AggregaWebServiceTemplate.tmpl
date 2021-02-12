@@ -1,9 +1,8 @@
 
-import { IHttpResult } from '../IHttpResult' ;
+
 import * as Interface from '../../lib/modelObj/Interfaces' ;
-import {UtilsSecu , CtxInterpretor} from "utils" ;
-import {HttpAbstractAggregaService} from "../HttpAbstractAggregaService" ;
-import { MiddleWareConfig } from '../MiddleWareConfig' ;
+import {UtilsSecu , CtxInterpretor,IHttpResult ,  HttpAbstractAggregaService , MiddleWareConfig } from "@hfdev/utils" ;
+
 
 <% _.forEach(datas.services , function(service){ %>
 <% if(service._class == "AliasBddService"){%>

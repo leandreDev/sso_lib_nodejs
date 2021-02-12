@@ -1,0 +1,138 @@
+import { UtilsSecu} from '@hfdev/utils' ;
+import {IPlateforme} from './IPlateforme' ;
+import * as express from 'express' ;
+
+export function expressRouterApi_service(currentApp:any, plateforme:IPlateforme){
+
+var toJsonRes:Function = currentApp.toJsonRes ;
+	var toErrRes:Function = currentApp.toErrRes ;
+	var router:express.Router = express.Router() ;
+	var bdd_plateforme:IPlateforme = plateforme;
+	var secu:UtilsSecu;
+	if(! currentApp.secu){
+		currentApp.secu = new UtilsSecu(currentApp) ;
+	}
+	secu = currentApp.secu ;
+
+    var parseBody = (req, res, next) => {
+		let buffer = '';
+		req.on('data', (buf) => {
+		  buffer += buf.toString();
+		});
+	
+		req.on('end', () => {
+		  try {
+			req.body = JSON.parse(buffer);
+			next();
+		  } catch (e) {
+			next('parseBody error');
+		  }
+		});
+	};
+
+
+    <% _.forEach(datas , function(collection){ %>
+
+    <% _.forEach([collection , ...collection._child] , function(subcollection){ %>
+		 
+        router.get('/collection/<%=subcollection.name%>/*' , (req , res)=>{
+                Promise.resolve()
+                .then(() => {
+                return bdd_plateforme.collections.<%=subcollection.name%>.get( req.params[0])
+                })
+                .then(data => {
+                res.send(data);
+                })
+                .catch(err => {
+                return res.send(this.toErrRes(err, 500, req));
+                });
+        })
+
+        router.post('/collection/<%=subcollection.name%>/*' , parseBody , (req , res)=>{
+                Promise.resolve()
+                .then(() => {
+                return bdd_plateforme.collections.<%=subcollection.name%>.post(req.body, req.params[0])
+                })
+                .then(data => {
+                res.send(data);
+                })
+                .catch(err => {
+                return res.send(this.toErrRes(err, 500, req));
+                });
+        })
+
+        router.put('/collection/<%=subcollection.name%>/*' , parseBody , (req , res)=>{
+                Promise.resolve()
+                .then(() => {
+                return bdd_plateforme.collections.<%=subcollection.name%>.put(req.body, req.params[0])
+                })
+                .then(data => {
+                res.send(data);
+                })
+                .catch(err => {
+                return res.send(this.toErrRes(err, 500, req));
+                });
+        })
+
+        router.patch('/collection/<%=subcollection.name%>' , parseBody , (req , res)=>{
+                Promise.resolve()
+                .then(() => {
+                return bdd_plateforme.collections.<%=subcollection.name%>.patch(req.body)
+                })
+                .then(data => {
+                res.send(data);
+                })
+                .catch(err => {
+                return res.send(this.toErrRes(err, 500, req));
+                });
+        })
+
+        router.delete('/collection/<%=subcollection.name%>/:id' ,  (req , res)=>{
+                Promise.resolve()
+                .then(() => {
+                return bdd_plateforme.collections.<%=subcollection.name%>.delete(req.params.id)
+                })
+                .then(data => {
+                res.send(data);
+                })
+                .catch(err => {
+                return res.send(this.toErrRes(err, 500, req));
+                });
+        })
+            
+		
+
+        router.patch('/admin/<%=subcollection.name%>/*' , parseBody , (req , res)=>{
+                Promise.resolve()
+                .then(() => {
+                return bdd_plateforme.collections.admin_<%=subcollection.name%>.patch(req.body, req.params[0])
+                })
+                .then(data => {
+                res.send(data);
+                })
+                .catch(err => {
+                return res.send(this.toErrRes(err, 500, req));
+                });
+        })
+
+        router.delete('/admin/<%=subcollection.name%>/*' ,  (req , res)=>{
+                Promise.resolve()
+                .then(() => {
+                return bdd_plateforme.collections.admin_<%=subcollection.name%>.delete(req.params[0])
+                })
+                .then(data => {
+                res.send(data);
+                })
+                .catch(err => {
+                return res.send(this.toErrRes(err, 500, req));
+                });
+        })
+        
+        
+		
+		 <%}) %>
+	<%}) %>
+
+return router ;
+
+}

@@ -37,6 +37,4 @@ scope
 The LinkedIn profile is very rich, and may contain a lot of information. The strategy can be configured with a profileFields parameter which specifies a list of fields your application needs. For example, to fetch the user's ID, name, email address, and headline, configure strategy like this.
 */
     "profileFields"?: string[];
-    static check(target: any, isCompleteObj?: boolean, path?: string): Promise<boolean>;
-    static create(target: any, path?: string): Promise<Model_passport_strategie_linkedin>;
 }

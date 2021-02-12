@@ -21,6 +21,4 @@ valeur minimum accepté
 valeur maximum accepté
 */
     "max"?: Date;
-    static check(target: any, isCompleteObj?: boolean, path?: string): Promise<boolean>;
-    static create(target: any, path?: string): Promise<Model_date>;
 }

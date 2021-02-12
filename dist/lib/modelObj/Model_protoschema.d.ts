@@ -1,5 +1,5 @@
 import * as Interface from "./Interfaces";
-import { Base } from "../Base";
+import { Base } from "@hfdev/utils";
 /**
   protoschema est un méta modéle. il permet de créer les autres modèle de la base
 */
@@ -33,6 +33,4 @@ permet d'hériter du schema parentMadel
 liste des champs du documents
 */
     "fields"?: Interface.Ifield[];
-    static check(target: any, isCompleteObj?: boolean, path?: string): Promise<boolean>;
-    static create(target: any, path?: string): Promise<Model_protoschema>;
 }

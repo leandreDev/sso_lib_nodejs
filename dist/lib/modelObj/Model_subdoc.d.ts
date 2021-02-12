@@ -13,6 +13,4 @@ export declare class Model_subdoc extends Model_field implements Interface.Isubd
 c'est la référence au schéma du ce sous objet
 */
     "protoSchemaId"?: string;
-    static check(target: any, isCompleteObj?: boolean, path?: string): Promise<boolean>;
-    static create(target: any, path?: string): Promise<Model_subdoc>;
 }

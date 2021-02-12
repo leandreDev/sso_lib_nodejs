@@ -33,6 +33,4 @@ ne pas utiliser pour l'instant ce doit être une expression regulière
 liste des valeur possible du champ
 */
     "enum"?: string[];
-    static check(target: any, isCompleteObj?: boolean, path?: string): Promise<boolean>;
-    static create(target: any, path?: string): Promise<Model_string>;
 }

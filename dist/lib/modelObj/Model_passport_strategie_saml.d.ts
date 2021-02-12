@@ -101,6 +101,4 @@ dictionary of additional query params to add to 'logout' requests
 The value with which to populate the Location attribute in the SingleLogoutService elements in the generated service provider metadata.
 */
     "logoutCallbackUrl"?: string;
-    static check(target: any, isCompleteObj?: boolean, path?: string): Promise<boolean>;
-    static create(target: any, path?: string): Promise<Model_passport_strategie_saml>;
 }

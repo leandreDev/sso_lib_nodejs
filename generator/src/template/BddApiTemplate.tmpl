@@ -1,14 +1,12 @@
 
 
-import {UtilsSecu , CtxInterpretor} from "utils" ;
-import { IHttpResult } from '../IHttpResult'
-import {IBase } from "../../lib/IBase" ;
-import {HttpServiceBase} from "../HttpServiceBase" ;
-import { HttpAbstractService } from '../HttpAbstractService'
-import * as Interfaces from "../../lib/modelObj/Interfaces" ;
-import { MiddleWareConfig } from '../MiddleWareConfig' ;
+import {UtilsSecu , CtxInterpretor ,IHttpResult , IBase ,HttpServiceBase , HttpServiceAdminBase ,HttpAbstractService ,  MiddleWareConfig } from "@hfdev/utils" ;
 
-export class api_collection_plateform {
+import * as Interfaces from "../../lib/modelObj/Interfaces" ;
+import {IPlateforme} from './IPlateforme' ;
+
+
+export class api_collection_plateform  {
 
 	constructor(conf:any ){
 	this.url = conf.url ;
@@ -16,10 +14,12 @@ export class api_collection_plateform {
 	<% _.forEach(datas , function(collection){ %>
 
 		this.<%=collection.name%>= new HttpServiceBase<Interfaces.I<%=collection.name%>>( {url:conf.url + "collection/<%=collection.name%>/" , secure:conf.secure} )  ;
+		this.admin_<%=collection.name%>= new HttpServiceAdminBase<Interfaces.I<%=collection.name%>>( {url:conf.url + "admin/<%=collection.name%>/" , secure:conf.secure} )  ;
 
 		<% _.forEach(collection._child , function(subcollection){ %>
 		 
 		this.<%=subcollection.name%>= new HttpServiceBase<Interfaces.I<%=subcollection.name%>>({url:conf.url + "collection/<%=subcollection.name%>/" , secure:conf.secure})  ;
+		this.admin_<%=subcollection.name%>= new HttpServiceAdminBase<Interfaces.I<%=subcollection.name%>>({url:conf.url + "admin/<%=subcollection.name%>/" , secure:conf.secure})  ;
 
 		 <%}) %>
 	<%}) %>
@@ -41,6 +41,7 @@ export class api_collection_plateform {
 		 <%}%>
 		*/
 		public <%=collection.name%>:HttpServiceBase<Interfaces.I<%=collection.name%>> ;
+		public admin_<%=collection.name%>:HttpServiceAdminBase<Interfaces.I<%=collection.name%>> ;
 
 		<% _.forEach(collection._child , function(subcollection){ %>
 		 /**
@@ -49,6 +50,7 @@ export class api_collection_plateform {
 		 info: vous ne pouvez voir que ce type d'objet
 		*/
 		public <%=subcollection.name%>:HttpServiceBase<Interfaces.I<%=subcollection.name%>> ;
+		public admin_<%=subcollection.name%>:HttpServiceAdminBase<Interfaces.I<%=subcollection.name%>> ;
 
 		 <%}) %>
 	<%}) %>
@@ -80,29 +82,10 @@ export class api_view_<%=view.name%> extends HttpAbstractService {
 	*/
 	public get( <% _.forEach(view.params , function(param){ %><%=param.paramName%>:<%if(param.type=="objectId"){%>string<%}else{%><%=param.type%><%}%> , <%})%> query: string = '*', headers: any = {}   ): Promise<IHttpResult<Interfaces.I<%=view.output.name%>>> {
 
-		return this.baseGet<Interfaces.I<%=view.output.name%>>(this.url + <% _.forEach(view.params , function(param){ %><%=param.paramName%>.toString() + "/" + <%})%> query , headers)
+		return this.baseGet<Interfaces.I<%=view.output.name%>>(this.url + <% _.forEach(view.params , function(param){ %><%=param.paramName%>.toString() + "/" + <%})%> query , headers )
 	}
 
-	/** middleware
-	génére une requette sur la vue <%=view.name%>
-	<%=view.decription%>
-	*/
-	public  getMiddleware = (config:MiddleWareConfig) =>{   
-	    config = this.globalCtxInt.updateEnv(config , true) ;
-	    return (req , res , next) =>{
-	      var localCtxInt:CtxInterpretor = new CtxInterpretor(req.ctx)
-	      localCtxInt.startPatern = "$ctx." ;
-	      var localConfig = localCtxInt.updateEnv(config , true) ;
-	      this.get( <% _.forEach(view.params , function(param){ %>localConfig.params.<%=param.paramName%> , <%})%> localConfig.params.query, localConfig.headers)
-	      .then((data)=>{
-	        req.ctx[localConfig.output] = data ;
-	        next() ;
-	      }).catch((err)=>{
-	        next(err)
-	      })
-	    }
-	  }
-	}
+}
 <%}) %>
 
 
@@ -124,7 +107,7 @@ export class api_view_plateform {
 }
 
 
-export  class Api_plateforme {
+export  class Api_plateforme implements IPlateforme {
 
 	constructor(public conf:any  ){
 		this.collections = new api_collection_plateform(conf ) ;

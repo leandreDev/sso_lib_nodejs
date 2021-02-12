@@ -1,0 +1,157 @@
+
+
+import {UtilsSecu ,  HttpServiceAdminBase ,HttpServiceBddBase ,HttpServiceBddAdminBase,HttpServiceBddBaseView, mongo , IBase, IHttpResult} from "@hfdev/utils" ;
+import * as Interfaces from "../../lib/modelObj/Interfaces" ;
+import * as Index from "../../lib/entities/Index" ;
+import * as fs from "fs" ;
+
+
+import {IPlateforme} from './IPlateforme' ;
+
+
+export class bdd_collection_plateform  {
+
+	constructor(conf:any ){
+	this.url = conf.url ;
+	this.secure = conf.secure ;
+	<% _.forEach(datas , function(collection){ %>
+
+		this.<%=collection.name%>= new HttpServiceBddBase<Interfaces.I<%=collection.name%>>( {bdd: conf.bdd , collectionName:'<%=collection.mongoCollectionName%>', entity:Index.Entity_<%=collection.name%> , debug:conf.debug ,  collections:this }  )  ;
+		this.admin_<%=collection.name%>= new HttpServiceBddAdminBase<Interfaces.I<%=collection.name%>>( {bdd: conf.bdd , collectionName:'<%=collection.mongoCollectionName%>', entity:Index.Entity_<%=collection.name%> , debug:conf.debug} )  ;
+
+		<% _.forEach(collection._child , function(subcollection){ %>
+		 
+		this.<%=subcollection.name%>= new HttpServiceBddBase<Interfaces.I<%=subcollection.name%>>({bdd: conf.bdd , collectionName:'<%=collection.mongoCollectionName%>',  entity:Index.Entity_<%=subcollection.name%> , _class:'<%=subcollection.name%>' , debug:conf.debug ,  collections:this })  ;
+		this.admin_<%=subcollection.name%>= new HttpServiceBddAdminBase<Interfaces.I<%=subcollection.name%>>({bdd: conf.bdd , collectionName:'<%=collection.mongoCollectionName%>',  entity:Index.Entity_<%=subcollection.name%> , _class:'<%=subcollection.name%>' , debug:conf.debug})  ;
+
+		 <%}) %>
+	<%}) %>
+	}
+
+  public getHttpService(colName: string): HttpServiceBddBase<IBase>{
+      return this[colName] ;
+  }
+
+	protected url:string ;
+	protected secure: UtilsSecu = null
+	<% _.forEach(datas , function(collection){ %>
+		/**
+		 service d'accès à la collection :<%=collection.name%>
+		 desc: <%= collection.description %>
+		 <%if(collection._child && collection._child.length > 0){%>
+		 info: vous pouvez voir tous les objets de cette collection y compris les enfants
+		 liste des interfaces héritées possibles:
+		 <% _.forEach(collection._child , function(subcollection){ %>
+		 	I<%=subcollection.name%>      <%=subcollection.description%>
+		 <%}) %>
+		 <%} else {%>
+
+		 <%}%>
+		*/
+		public <%=collection.name%>:HttpServiceBddBase<Interfaces.I<%=collection.name%>> ;
+		public admin_<%=collection.name%>:HttpServiceBddAdminBase<Interfaces.I<%=collection.name%>> ;
+
+		<% _.forEach(collection._child , function(subcollection){ %>
+		 /**
+		 service d'accès a la sous-collection :<%=subcollection.name%>
+		 desc: <%= subcollection.description %>
+		 info: vous ne pouvez voir que ce type d'objet
+		*/
+		public <%=subcollection.name%>:HttpServiceBddBase<Interfaces.I<%=subcollection.name%>> ;
+		public admin_<%=subcollection.name%>:HttpServiceBddAdminBase<Interfaces.I<%=subcollection.name%>> ;
+
+		 <%}) %>
+	<%}) %>
+	
+}
+
+<% _.forEach(views , function(view){ %>
+/**
+	accès à la vue :<%=view.name%> 
+	<%=view.description%>
+*/
+export class bdd_view_<%=view.name%> extends HttpServiceBddBaseView<<%=idInterface[view.output._id]%>> {
+/**
+	accès à la vue :<%=view.name%> 
+	<%=view.decription%>
+*/	
+	constructor( public conf:any ) {
+			super( conf )
+			
+		}
+
+
+	/**
+	génére une requette sur la vue <%=view.name%>
+	<%=view.decription%>
+	*/
+  private agregate:any[] = <%=JSON.stringify(view.pipeline)%> ;
+
+	public get( <% _.forEach(view.params , function(param){ %><%=param.paramName%>:<%if(param.type=="objectId"){%>string<%}else{%><%=param.type%><%}%> , <%})%> query: string = '*', headers: any = {} , ctx:any={}  ): Promise<IHttpResult<<%=idInterface[view.output._id]%>>> {
+		//ajouter les params dans ctx
+    ctx.params = {} ;
+    return super.get( query , headers , this.agregate , ctx)
+	}
+}	
+<%}) %>
+
+
+export class bdd_view_plateform {
+
+	constructor( public conf:any , collections:any ){
+	<% _.forEach(views , function(view){ %>
+	this.<%=view.name%> = new bdd_view_<%=view.name%>({bdd: conf.bdd , collectionName:'<%=idName[view.model]%>', entity:Index.Entity_<%=view.output.name%> , debug:conf.debug ,  collections:collections })  ;
+		<%}) %>
+	}
+
+	<% _.forEach(views , function(view){ %>
+	/**
+	accès à la vue :<%=view.name%>     <%=view.description%>
+	*/
+	public <%=view.name%>:bdd_view_<%=view.name%> ;
+	<%}) %>
+	
+}
+
+
+export  class Bdd_plateforme implements IPlateforme {
+
+	constructor(public conf:{url:string, secure:any , debug?:boolean, bdd?:Promise<mongo.Db>, caPath?: string }  ){
+
+    if(!conf.bdd){
+      conf.bdd = new Promise((resolve, reject)=>{
+        if (conf.caPath) {
+          var ca = [fs.readFileSync(conf.caPath)];
+          mongo.MongoClient.connect(conf.url,
+            {
+              sslValidate: true,
+              sslCA: ca,
+              useNewUrlParser: true
+            })
+            .then(mongoCLient => {
+              resolve(mongoCLient.db());
+            })
+
+        } else {
+          mongo.MongoClient.connect(conf.url)
+            .then(mongoCLient => {
+              resolve(mongoCLient.db());
+            })
+        }
+      })
+    }
+    this.collections = new bdd_collection_plateform(conf ) ;
+    this.views = new bdd_view_plateform(conf , this.collections) ;
+	}
+
+
+
+	/**
+		liste des collections de l'api
+	*/
+	public collections:bdd_collection_plateform ;
+	/**
+		liste des vues de l'api
+	*/
+	public views: bdd_view_plateform ; 
+} 

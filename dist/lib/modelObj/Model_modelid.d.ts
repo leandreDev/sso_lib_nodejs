@@ -13,6 +13,4 @@ export declare class Model_modelid extends Model_field implements Interface.Imod
 ref
 */
     "ref"?: string;
-    static check(target: any, isCompleteObj?: boolean, path?: string): Promise<boolean>;
-    static create(target: any, path?: string): Promise<Model_modelid>;
 }

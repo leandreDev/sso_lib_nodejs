@@ -41,6 +41,4 @@ The Facebook profile contains a lot of information about a user. By default, not
 enableProof
 */
     "enableProof"?: boolean;
-    static check(target: any, isCompleteObj?: boolean, path?: string): Promise<boolean>;
-    static create(target: any, path?: string): Promise<Model_passport_strategie_facebook>;
 }

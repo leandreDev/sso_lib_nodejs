@@ -1,14 +1,12 @@
 
 
-import {UtilsSecu , CtxInterpretor} from "utils" ;
-import { IHttpResult } from '../IHttpResult'
-import {IBase } from "../../lib/IBase" ;
-import {HttpServiceBase} from "../HttpServiceBase" ;
-import { HttpAbstractService } from '../HttpAbstractService'
-import * as Interfaces from "../../lib/modelObj/Interfaces" ;
-import { MiddleWareConfig } from '../MiddleWareConfig' ;
+import {UtilsSecu , CtxInterpretor ,IHttpResult , IBase ,HttpServiceBase , HttpServiceAdminBase ,HttpAbstractService ,  MiddleWareConfig } from "@hfdev/utils" ;
 
-export class api_collection_plateform {
+import * as Interfaces from "../../lib/modelObj/Interfaces" ;
+import {IPlateforme} from './IPlateforme' ;
+
+
+export class api_collection_plateform  {
 
 	constructor(conf:any ){
 	this.url = conf.url ;
@@ -16,16 +14,19 @@ export class api_collection_plateform {
 	
 
 		this.protoschema= new HttpServiceBase<Interfaces.Iprotoschema>( {url:conf.url + "collection/protoschema/" , secure:conf.secure} )  ;
-
-		
-	
-
-		this.oidc_Client= new HttpServiceBase<Interfaces.Ioidc_Client>( {url:conf.url + "collection/oidc_Client/" , secure:conf.secure} )  ;
+		this.admin_protoschema= new HttpServiceAdminBase<Interfaces.Iprotoschema>( {url:conf.url + "admin/protoschema/" , secure:conf.secure} )  ;
 
 		
 	
 
 		this.oidc_account= new HttpServiceBase<Interfaces.Ioidc_account>( {url:conf.url + "collection/oidc_account/" , secure:conf.secure} )  ;
+		this.admin_oidc_account= new HttpServiceAdminBase<Interfaces.Ioidc_account>( {url:conf.url + "admin/oidc_account/" , secure:conf.secure} )  ;
+
+		
+	
+
+		this.oidc_Client= new HttpServiceBase<Interfaces.Ioidc_Client>( {url:conf.url + "collection/oidc_Client/" , secure:conf.secure} )  ;
+		this.admin_oidc_Client= new HttpServiceAdminBase<Interfaces.Ioidc_Client>( {url:conf.url + "admin/oidc_Client/" , secure:conf.secure} )  ;
 
 		
 	
@@ -41,17 +42,7 @@ export class api_collection_plateform {
 		 
 		*/
 		public protoschema:HttpServiceBase<Interfaces.Iprotoschema> ;
-
-		
-	
-		/**
-		 service d'accès à la collection :oidc_Client
-		 desc: description d'un client openId (c'est une application)
-		 
-
-		 
-		*/
-		public oidc_Client:HttpServiceBase<Interfaces.Ioidc_Client> ;
+		public admin_protoschema:HttpServiceAdminBase<Interfaces.Iprotoschema> ;
 
 		
 	
@@ -63,6 +54,19 @@ export class api_collection_plateform {
 		 
 		*/
 		public oidc_account:HttpServiceBase<Interfaces.Ioidc_account> ;
+		public admin_oidc_account:HttpServiceAdminBase<Interfaces.Ioidc_account> ;
+
+		
+	
+		/**
+		 service d'accès à la collection :oidc_Client
+		 desc: description d'un client openId (c'est une application)
+		 
+
+		 
+		*/
+		public oidc_Client:HttpServiceBase<Interfaces.Ioidc_Client> ;
+		public admin_oidc_Client:HttpServiceAdminBase<Interfaces.Ioidc_Client> ;
 
 		
 	
@@ -83,7 +87,7 @@ export class api_view_plateform {
 }
 
 
-export  class Api_plateforme {
+export  class Api_plateforme implements IPlateforme {
 
 	constructor(public conf:any  ){
 		this.collections = new api_collection_plateform(conf ) ;

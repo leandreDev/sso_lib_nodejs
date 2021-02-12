@@ -13,6 +13,4 @@ export declare class Model_boolean extends Model_field implements Interface.Iboo
 valeur par defaut
 */
     "default"?: boolean;
-    static check(target: any, isCompleteObj?: boolean, path?: string): Promise<boolean>;
-    static create(target: any, path?: string): Promise<Model_boolean>;
 }

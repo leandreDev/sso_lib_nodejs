@@ -1,0 +1,5 @@
+import {IHttpResult} from "./IHttpResult" ;
+    <% _.forEach(datas , function(service){ %>
+        import {<%= service.name %>} from ".<%= service.path %>" ;
+    <% }) %>
+    export { IHttpResult <% _.forEach(datas , function(service){ %>, <%= service.name %> <% }) %>};
