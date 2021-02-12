@@ -1,5 +1,5 @@
 import * as Interface from "./Interfaces";
-import { Base } from "../Base";
+import { Base } from "@hfdev/utils";
 /**
   donnée des connecteur sociaux
 */
@@ -9,6 +9,4 @@ export declare class Model_social_data extends Base implements Interface.Isocial
     */
     constructor(obj?: any);
     _class: string;
-    static check(target: any, isCompleteObj?: boolean, path?: string): Promise<boolean>;
-    static create(target: any, path?: string): Promise<Model_social_data>;
 }

@@ -1,5 +1,5 @@
 import * as Interface from "./Interfaces";
-import { Base } from "../Base";
+import { Base } from "@hfdev/utils";
 /**
   description d'un client openId (c'est une application)
 */
@@ -149,6 +149,8 @@ configuration des connecteurs sociaux
 paramètre de gestion des utilisateurs
 */
     "userManagment"?: Interface.Ioidc_clientUserManagment;
-    static check(target: any, isCompleteObj?: boolean, path?: string): Promise<boolean>;
-    static create(target: any, path?: string): Promise<Model_oidc_Client>;
+    /**
+redirige automatiquement vers la connexion sso
+*/
+    "redirectSso"?: boolean;
 }

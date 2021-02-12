@@ -29,6 +29,4 @@ TWITTER_CONSUMER_SECRET
 url de callback
 */
     "callbackURL": string;
-    static check(target: any, isCompleteObj?: boolean, path?: string): Promise<boolean>;
-    static create(target: any, path?: string): Promise<Model_passport_strategie_twitter>;
 }

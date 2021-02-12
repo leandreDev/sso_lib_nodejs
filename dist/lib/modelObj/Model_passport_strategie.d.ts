@@ -1,5 +1,5 @@
 import * as Interface from "./Interfaces";
-import { Base } from "../Base";
+import { Base } from "@hfdev/utils";
 /**
   configuration d'une stratégie passport à déployer sur le sso
 */
@@ -21,6 +21,4 @@ création automatique d'un compte si il n’existe pas
 connexion automatique au compte contenant le même email
 */
     "autoLoginWMail"?: boolean;
-    static check(target: any, isCompleteObj?: boolean, path?: string): Promise<boolean>;
-    static create(target: any, path?: string): Promise<Model_passport_strategie>;
 }

@@ -1,5 +1,5 @@
 import * as Interface from "./Interfaces";
-import { Base } from "../Base";
+import { Base } from "@hfdev/utils";
 /**
   JSON Web Key
 */
@@ -45,6 +45,4 @@ The "x5c" (X.509 Certificate Chain) member contains a chain of one or    more PK
 The "x5t#S256" (X.509 Certificate SHA-256 Thumbprint) member is a    base64url encoded SHA-256 thumbprint (a.k.a. digest) of the DER    encoding of an X.509 certificate
 */
     "x5t#S256"?: string;
-    static check(target: any, isCompleteObj?: boolean, path?: string): Promise<boolean>;
-    static create(target: any, path?: string): Promise<Model_jwk>;
 }

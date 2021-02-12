@@ -1,5 +1,5 @@
 import * as Interface from "./Interfaces";
-import { Base } from "../Base";
+import { Base } from "@hfdev/utils";
 /**
   compte de l'utilisateur
 */
@@ -85,6 +85,4 @@ fin de validité de la clef de reset du password
 call back de la séquece de reset du password
 */
     "resetPasswordReturn"?: string;
-    static check(target: any, isCompleteObj?: boolean, path?: string): Promise<boolean>;
-    static create(target: any, path?: string): Promise<Model_oidc_account>;
 }
