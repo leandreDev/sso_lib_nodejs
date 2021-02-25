@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.expressRouterApi_service = void 0;
-const utils_1 = require("@leandreDev/utils");
+const utils_1 = require("@leandredev/utils");
 const express = require("express");
 function expressRouterApi_service(currentApp, plateforme) {
     var toJsonRes = currentApp.toJsonRes;

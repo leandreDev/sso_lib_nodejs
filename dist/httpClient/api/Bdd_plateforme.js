@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Bdd_plateforme = exports.bdd_view_plateform = exports.bdd_collection_plateform = void 0;
-const utils_1 = require("@leandreDev/utils");
+const utils_1 = require("@leandredev/utils");
 const Index = require("../../lib/entities/Index");
 const fs = require("fs");
 class bdd_collection_plateform {

@@ -1,4 +1,4 @@
-import { Entity } from "@leandreDev/utils";
+import { Entity } from "@leandredev/utils";
 /**
   JSON Web Key Set (JWK Set)
 */

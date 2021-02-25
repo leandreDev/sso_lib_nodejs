@@ -1,4 +1,4 @@
-import { UtilsSecu, HttpServiceBddBase, HttpServiceBddAdminBase, mongo, IBase } from "@leandreDev/utils";
+import { UtilsSecu, HttpServiceBddBase, HttpServiceBddAdminBase, mongo, IBase } from "@leandredev/utils";
 import * as Interfaces from "../../lib/modelObj/Interfaces";
 import { IPlateforme } from './IPlateforme';
 export declare class bdd_collection_plateform {

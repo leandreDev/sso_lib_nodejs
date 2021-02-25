@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Model_oidc_account = void 0;
 const _ = require("lodash");
 const Index = require("./Index");
-const utils_1 = require("@leandreDev/utils");
+const utils_1 = require("@leandredev/utils");
 /**
   compte de l'utilisateur
 */
