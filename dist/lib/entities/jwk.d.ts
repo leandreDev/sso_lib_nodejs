@@ -12,7 +12,7 @@ export declare class Entity_jwk extends Entity {
     static checkx5u(val: any, path?: string): string[];
     static checkx5c(val: any, path?: string): string[];
     static checkx5t(val: any, path?: string): string[];
-    static ["checkx5t#S256"](val: any, path?: string): string[];
+    static "checkx5t#S256"(val: any, path?: string): string[];
     static check(target: any, isCompleteObj?: boolean, path?: string): string[];
     static castQueryParam(path: string, value: any): any;
     static getClassNameOfProp(path: string): string;

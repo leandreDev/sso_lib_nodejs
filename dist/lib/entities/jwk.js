@@ -142,7 +142,7 @@ class Entity_jwk extends utils_1.Entity {
             return res;
         }
     }
-    static ["checkx5t#S256"](val, path = null) {
+    static "checkx5t#S256"(val, path = null) {
         if (val == null) {
             return null;
         }
