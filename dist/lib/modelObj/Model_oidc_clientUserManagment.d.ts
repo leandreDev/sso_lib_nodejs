@@ -1,5 +1,5 @@
 import * as Interface from "./Interfaces";
-import { Base } from "@hfdev/utils";
+import { Base } from "@leandreDev/utils";
 /**
   configuration du gestionnaire d'utilisateur
 */

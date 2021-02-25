@@ -1,4 +1,4 @@
-import { UtilsSecu, HttpServiceBase, HttpServiceAdminBase } from "@hfdev/utils";
+import { UtilsSecu, HttpServiceBase, HttpServiceAdminBase } from "@leandreDev/utils";
 import * as Interfaces from "../../lib/modelObj/Interfaces";
 import { IPlateforme } from './IPlateforme';
 export declare class api_collection_plateform {

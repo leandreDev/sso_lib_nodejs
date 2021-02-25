@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Entity_oidc_Client = void 0;
 const _ = require("lodash");
 const Index = require("./Index");
-const utils_1 = require("@hfdev/utils");
+const utils_1 = require("@leandreDev/utils");
 /**
   description d'un client openId (c'est une application)
 */

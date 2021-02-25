@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Entity_social_data = void 0;
 const Index = require("./Index");
-const utils_1 = require("@hfdev/utils");
+const utils_1 = require("@leandreDev/utils");
 /**
   donnée des connecteur sociaux
 */

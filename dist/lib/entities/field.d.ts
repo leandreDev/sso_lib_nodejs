@@ -1,4 +1,4 @@
-import { Entity } from "@hfdev/utils";
+import { Entity } from "@leandreDev/utils";
 /**
   ce champ est le champ représente les champs de la base. Il est abstrait, vous devez utiliser ces enfants
 */

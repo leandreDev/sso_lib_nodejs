@@ -1,5 +1,5 @@
 import * as Interface from "./Interfaces";
-import { Base } from "@hfdev/utils";
+import { Base } from "@leandreDev/utils";
 /**
   configuration d'une stratégie passport à déployer sur le sso
 */

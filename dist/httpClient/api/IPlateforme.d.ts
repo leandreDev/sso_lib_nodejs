@@ -1,4 +1,4 @@
-import { IHttpServiceBase, IHttpServiceAdminBase } from "@hfdev/utils";
+import { IHttpServiceBase, IHttpServiceAdminBase } from "@leandreDev/utils";
 import * as Interfaces from "../../lib/modelObj/Interfaces";
 export interface IView_plateform {
 }

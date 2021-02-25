@@ -1,6 +1,6 @@
 {
   "name": "@leandreDev/sso_lib_nodejs",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "librarie de communication la base sso pour nodeJS",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

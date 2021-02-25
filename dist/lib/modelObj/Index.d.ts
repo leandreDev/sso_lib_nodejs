@@ -1,4 +1,4 @@
-import { Base } from "@hfdev/utils";
+import { Base } from "@leandreDev/utils";
 import { Model_boolean } from "./Model_boolean";
 import { Model_number } from "./Model_number";
 import { Model_date } from "./Model_date";
