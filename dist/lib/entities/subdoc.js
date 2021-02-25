@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Entity_subdoc = void 0;
 const _ = require("lodash");
 const Index = require("./Index");
-const utils_1 = require("@hfdev/utils");
+const utils_1 = require("@leandreDev/utils");
 const field_1 = require("./field");
 /**
   ce champ permet d'insérer un document dans un autre

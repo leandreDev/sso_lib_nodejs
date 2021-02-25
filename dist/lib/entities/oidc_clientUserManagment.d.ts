@@ -1,4 +1,4 @@
-import { Entity } from "@hfdev/utils";
+import { Entity } from "@leandreDev/utils";
 /**
   configuration du gestionnaire d'utilisateur
 */

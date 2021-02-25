@@ -1,6 +1,6 @@
 import * as _ from "lodash" ;
 import * as Index from "./Index" ;
-import {mongo , Entity} from "@hfdev/utils" ;
+import {mongo , Entity} from "@leandreDev/utils" ;
 
 
 import {Entity_string } from "./string"

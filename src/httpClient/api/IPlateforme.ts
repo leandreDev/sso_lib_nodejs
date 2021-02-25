@@ -1,5 +1,5 @@
 
-import {IHttpServiceBase , IHttpServiceAdminBase, IHttpResult  } from "@hfdev/utils" ;
+import {IHttpServiceBase , IHttpServiceAdminBase, IHttpResult  } from "@leandreDev/utils" ;
 
 import * as Interfaces from "../../lib/modelObj/Interfaces" ;
 

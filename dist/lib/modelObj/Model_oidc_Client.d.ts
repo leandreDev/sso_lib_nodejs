@@ -1,5 +1,5 @@
 import * as Interface from "./Interfaces";
-import { Base } from "@hfdev/utils";
+import { Base } from "@leandreDev/utils";
 /**
   description d'un client openId (c'est une application)
 */

@@ -1,4 +1,4 @@
-import { UtilsSecu} from '@hfdev/utils' ;
+import { UtilsSecu} from '@leandreDev/utils' ;
 import {IPlateforme} from './IPlateforme' ;
 import * as express from 'express' ;
 

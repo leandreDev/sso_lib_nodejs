@@ -1,5 +1,5 @@
 import * as Interface from "./Interfaces";
-import { Base } from "@hfdev/utils";
+import { Base } from "@leandreDev/utils";
 /**
   ce champ est le champ représente les champs de la base. Il est abstrait, vous devez utiliser ces enfants
 */

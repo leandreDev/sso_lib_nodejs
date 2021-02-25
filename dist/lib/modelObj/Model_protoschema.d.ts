@@ -1,5 +1,5 @@
 import * as Interface from "./Interfaces";
-import { Base } from "@hfdev/utils";
+import { Base } from "@leandreDev/utils";
 /**
   protoschema est un méta modéle. il permet de créer les autres modèle de la base
 */
