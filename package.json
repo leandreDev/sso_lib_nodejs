@@ -17,7 +17,7 @@
     "vPatch": "npm --no-git-tag-version version patch && npm run pub",
     "postversion": "git tag dev_$npm_package_version && git add -A && git commit -m 'dev_$npm_package_version' && git push && git push --tags ",
     "publi": "npm run build && npm run vPatch",
-    "u": "npm update @hfdev/utils"
+    "u": "npm update @leandreDev/utils"
   },
   "scriptsDev": {
     "pub": "git checkout master && npm version $npm_package_version && git checkout dev",
@@ -37,16 +37,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/HF-dev/sso_lib_nodejs.git"
+    "url": "git+https://github.com/leandreDev/sso_lib_nodejs.git"
   },
   "author": "hf-dev",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/HF-dev/sso_lib_nodejs/issues"
+    "url": "https://github.com/leandreDev/sso_lib_nodejs/issues"
   },
-  "homepage": "https://github.com/HF-dev/sso_lib_nodejs#readme",
+  "homepage": "https://github.com/leandreDev/sso_lib_nodejs#readme",
   "devDependencies": {
-    "@hfdev/utils": "github:hf-dev/utils#semver:^1.0.148",
+    "@leandreDev/utils": "github:leandreDev/utils#semver:^1.0.148",
     "@types/assert": "0.0.31",
     "@types/fs-extra": "^3.0.3",
     "@types/lodash": "^4.14.66",
