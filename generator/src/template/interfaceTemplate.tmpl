@@ -1,4 +1,4 @@
-  import {IBase } from "@leandreDev/utils" ;
+  import {IBase } from "@leandredev/utils" ;
   export interface I{
 
   }

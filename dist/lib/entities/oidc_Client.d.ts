@@ -1,4 +1,4 @@
-import { Entity } from "@leandreDev/utils";
+import { Entity } from "@leandredev/utils";
 /**
   description d'un client openId (c'est une application)
 */

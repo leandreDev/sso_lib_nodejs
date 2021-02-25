@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Model_protoschema = void 0;
 const _ = require("lodash");
 const Index = require("./Index");
-const utils_1 = require("@leandreDev/utils");
+const utils_1 = require("@leandredev/utils");
 /**
   protoschema est un méta modéle. il permet de créer les autres modèle de la base
 */

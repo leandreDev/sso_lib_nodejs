@@ -1,4 +1,4 @@
-import { Entity } from "@leandreDev/utils";
+import { Entity } from "@leandredev/utils";
 /**
   protoschema est un méta modéle. il permet de créer les autres modèle de la base
 */

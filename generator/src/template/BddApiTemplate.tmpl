@@ -1,6 +1,6 @@
 
 
-import {UtilsSecu , CtxInterpretor ,IHttpResult , IBase ,HttpServiceBase , HttpServiceAdminBase ,HttpAbstractService ,  MiddleWareConfig } from "@leandreDev/utils" ;
+import {UtilsSecu , CtxInterpretor ,IHttpResult , IBase ,HttpServiceBase , HttpServiceAdminBase ,HttpAbstractService ,  MiddleWareConfig } from "@leandredev/utils" ;
 
 import * as Interfaces from "../../lib/modelObj/Interfaces" ;
 import {IPlateforme} from './IPlateforme' ;

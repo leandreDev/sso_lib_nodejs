@@ -1,7 +1,7 @@
 import * as _ from "lodash" ;
 import * as Interface from "./Interfaces" ;
 import * as Index from "./Index" ;
-import {Base } from "@leandreDev/utils" ;
+import {Base } from "@leandredev/utils" ;
 
 
 import {Model_string } from "./Model_string"

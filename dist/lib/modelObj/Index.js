@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.passport_strategie_saml = exports.oidc_Client = exports.passport_strategie_local = exports.objectid = exports.object = exports.oidc_account = exports.oidc_clientUserManagment = exports.password = exports.passport_strategie_dropbox = exports.social_data = exports.passport_strategie_windowslive = exports.passport_strategie_instagram = exports.passport_strategie_twitter = exports.passport_strategie = exports.passport_strategie_google = exports.passport_strategie_linkedin = exports.passport_strategie_facebook = exports.jwks = exports.texte = exports.jwk = exports.htmltexte = exports.protoschema = exports.subdoc = exports.field = exports.string = exports.modelid = exports.date = exports.number = exports.boolean = exports.Base = void 0;
-const utils_1 = require("@leandreDev/utils");
+const utils_1 = require("@leandredev/utils");
 Object.defineProperty(exports, "Base", { enumerable: true, get: function () { return utils_1.Base; } });
 const Model_boolean_1 = require("./Model_boolean");
 Object.defineProperty(exports, "boolean", { enumerable: true, get: function () { return Model_boolean_1.Model_boolean; } });

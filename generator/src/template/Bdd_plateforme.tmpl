@@ -1,6 +1,6 @@
 
 
-import {UtilsSecu ,  HttpServiceAdminBase ,HttpServiceBddBase ,HttpServiceBddAdminBase,HttpServiceBddBaseView, mongo , IBase, IHttpResult} from "@leandreDev/utils" ;
+import {UtilsSecu ,  HttpServiceAdminBase ,HttpServiceBddBase ,HttpServiceBddAdminBase,HttpServiceBddBaseView, mongo , IBase, IHttpResult} from "@leandredev/utils" ;
 import * as Interfaces from "../../lib/modelObj/Interfaces" ;
 import * as Index from "../../lib/entities/Index" ;
 import * as fs from "fs" ;

@@ -1,4 +1,4 @@
-import {IHttpResult , IHttpServiceBase , IHttpServiceAdminBase } from "@leandreDev/utils" ;
+import {IHttpResult , IHttpServiceBase , IHttpServiceAdminBase } from "@leandredev/utils" ;
     
         export * from "./api/Api_plateforme" ;
     

@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Model_jwk = void 0;
 const _ = require("lodash");
-const utils_1 = require("@leandreDev/utils");
+const utils_1 = require("@leandredev/utils");
 /**
   JSON Web Key
 */

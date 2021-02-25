@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Entity_oidc_clientUserManagment = void 0;
 const Index = require("./Index");
-const utils_1 = require("@leandreDev/utils");
+const utils_1 = require("@leandredev/utils");
 /**
   configuration du gestionnaire d'utilisateur
 */
