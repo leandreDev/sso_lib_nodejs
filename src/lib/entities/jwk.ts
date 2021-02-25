@@ -319,7 +319,7 @@ public static checkx5t(val:any, path:string =null):string[]{
        
  
 
-public static ["checkx5t#S256"](val:any, path:string =null):string[]{
+public static "checkx5t#S256"(val:any, path:string =null):string[]{
          if(val == null){
             return null ;
          }
