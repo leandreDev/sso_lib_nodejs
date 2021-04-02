@@ -1,0 +1,8 @@
+src
+confs
+.vscode
+package-lock.json
+node_modules
+generator
+.gitignore
+bdschema

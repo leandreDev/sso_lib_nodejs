@@ -10,11 +10,14 @@
     "target": "es2017"
   },
   "exclude": [
-    "node_modules"
+    "node_modules",
+    ".github"
   ],
   "compileOnSave": false,
   "buildOnSave": false,
-  "atom": { "rewriteTsconfig": false } ,
+  "atom": {
+    "rewriteTsconfig": false
+  },
   "files": [
     "./src/index.ts"
   ]

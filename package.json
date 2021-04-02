@@ -1,5 +1,5 @@
 {
-  "name": "sso_lib_nodejs",
+  "name": "@leandredev/sso_lib_nodejs",
   "version": "1.0.12",
   "description": "librarie de communication la base sso for nodeJS",
   "main": "./dist/index.js",
@@ -10,13 +10,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
     "testing": "node dist/test.js",
-    "pub": "git checkout master && npm version $npm_package_version && git checkout dev",
-    "vMajor": "npm run initNewVBrach && npm --no-git-tag-version version major  && npm run pub",
-    "vMinor": "npm run initNewVBrach && npm --no-git-tag-version version minor && npm run pub",
-    "initNewVBrach": "git checkout -b V$npm_package_version && git push --set-upstream origin V$npm_package_version && git add -A && git push && git checkout dev ",
-    "vPatch": "npm --no-git-tag-version version patch && npm run pub",
-    "postversion": "git tag dev_$npm_package_version && git add -A && git commit -m 'dev_$npm_package_version' && git push && git push --tags ",
-    "publi": "npm run build && npm run vPatch",
+    "version": "npm run build && git add -A dist",
+    "postversion": "git push && git push --follow-tags",
     "u": "npm update @leandredev/utils"
   },
   "scriptsDev": {
@@ -39,6 +34,9 @@
     "type": "git",
     "url": "git+https://github.com/leandreDev/sso_lib_nodejs.git"
   },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "author": "hf-dev",
   "license": "ISC",
   "bugs": {
@@ -46,7 +44,7 @@
   },
   "homepage": "https://github.com/leandreDev/sso_lib_nodejs#readme",
   "devDependencies": {
-    "@leandredev/utils": "github:leandreDev/utils#semver:^1.0.148",
+    "@leandredev/utils": "^1.0.148",
     "@types/assert": "0.0.31",
     "@types/fs-extra": "^3.0.3",
     "@types/lodash": "^4.14.66",
