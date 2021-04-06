@@ -12,7 +12,7 @@ jobs:
     name: Generate new Version @leandeerdev/sso_lib_nodejs
     env:
       ACTIONS_ALLOW_UNSECURE_COMMANDS: "true"
-      GITHUB_TOKEN:  ${{ secrets.LEANDRE_DEV_AUTH_TOKEN }}
+      GITHUB_TOKEN:  s{{ secrets.LEANDRE_DEV_AUTH_TOKEN }}
       NODE_VERSION: "v14.15.4"
       VERSION_TYPE: ""
       VERSION_TAG: ""
@@ -52,12 +52,29 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
       - name: Npm CI installpackage from package-lock.json
         run: |
-          git config --global url."https://${{ secrets.LEANDRE_DEV_AUTH_TOKEN }}@github.com/".insteadOf ssh://git@github.com/
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.LEANDRE_DEV_AUTH_TOKEN }}" > ~/.npmrc
           npm ci
-      - name: Generate new version
+      - name: Npm run build
         run: |
-          npm  version ${{ env.VERSION_TYPE}} -m"New Version %s"
+          npm run build
+
+      - name: Commit new Generate files
+        run: |
+          git config  user.email "diegopatino@doprr.com"
+          git config  user.name "Diego Patino"
+          git add .
+          git commit -m "Build new Version" 
+          git push
+      - name: Generate new  version
+        run: |
+          npm  version ${{ env.VERSION_TYPE}} -m"New Version"
+      - name: Commit new tagged files
+        run: |
+          git config  user.email "diegopatino@doprr.com"
+          git config  user.name "Diego Patino"
+          git push --follow-tags
       - name: Publish package to npm registry
         run: |
           echo "//npm.pkg.github.com/:_authToken=${{ secrets.LEANDRE_DEV_AUTH_TOKEN }}" > ~/.npmrc
           npm publish
+
