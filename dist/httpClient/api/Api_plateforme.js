@@ -7,12 +7,27 @@ class api_collection_plateform {
         this.secure = null;
         this.url = conf.url;
         this.secure = conf.secure;
-        this.protoschema = new utils_1.HttpServiceBase({ url: conf.url + "collection/protoschema/", secure: conf.secure });
-        this.admin_protoschema = new utils_1.HttpServiceAdminBase({ url: conf.url + "admin/protoschema/", secure: conf.secure });
-        this.oidc_account = new utils_1.HttpServiceBase({ url: conf.url + "collection/oidc_account/", secure: conf.secure });
-        this.admin_oidc_account = new utils_1.HttpServiceAdminBase({ url: conf.url + "admin/oidc_account/", secure: conf.secure });
-        this.oidc_Client = new utils_1.HttpServiceBase({ url: conf.url + "collection/oidc_Client/", secure: conf.secure });
-        this.admin_oidc_Client = new utils_1.HttpServiceAdminBase({ url: conf.url + "admin/oidc_Client/", secure: conf.secure });
+        this.protoschema = new utils_1.HttpServiceBase({
+            url: conf.url + 'collection/protoschema/',
+            secure: conf.secure,
+        });
+        this.admin_protoschema = new utils_1.HttpServiceAdminBase({
+            url: conf.url + 'admin/protoschema/',
+            secure: conf.secure,
+        });
+        this.oidc_account = new utils_1.HttpServiceBase({
+            url: conf.url + 'collection/oidc_account/',
+            secure: conf.secure,
+        });
+        this.admin_oidc_account = new utils_1.HttpServiceAdminBase({ url: conf.url + 'admin/oidc_account/', secure: conf.secure });
+        this.oidc_Client = new utils_1.HttpServiceBase({
+            url: conf.url + 'collection/oidc_Client/',
+            secure: conf.secure,
+        });
+        this.admin_oidc_Client = new utils_1.HttpServiceAdminBase({
+            url: conf.url + 'admin/oidc_Client/',
+            secure: conf.secure,
+        });
     }
 }
 exports.api_collection_plateform = api_collection_plateform;
